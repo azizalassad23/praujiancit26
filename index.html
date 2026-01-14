@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Ujian Informatika</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050b14;
+            --panel-bg: rgba(16, 26, 48, 0.85);
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff0055;
+            --neon-green: #0aff00;
+            --text-main: #e0f7fa;
+            --text-dim: #5f7a8c;
+        }
+
+        * { box-sizing: border-box; user-select: none; }
+
+        body {
+            margin: 0;
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Jika layar terlalu kecil */
+        @media (max-width: 768px) {
+            body { overflow-y: auto; height: auto; }
+            .main-wrapper { flex-direction: column; }
+            .sidebar { width: 100%; order: 2; }
+            .content-area { order: 1; min-height: 500px; }
+        }
+
+        .main-wrapper { display: flex; flex: 1; padding: 20px; gap: 20px; height: 100%; }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 300px;
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-left: 4px solid var(--neon-cyan);
+            padding: 20px;
+            display: flex; flex-direction: column;
+        }
+
+        .header { font-family: 'Orbitron'; font-size: 1.2rem; color: var(--neon-cyan); margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        
+        input {
+            width: 100%; background: #000; border: 1px solid #444; color: white;
+            padding: 10px; margin-bottom: 15px; font-family: inherit;
+        }
+        input:focus { border-color: var(--neon-cyan); outline: none; }
+
+        .matrix-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px;
+            overflow-y: auto; flex: 1; padding-right: 5px;
+        }
+        .matrix-btn {
+            aspect-ratio: 1; background: #111; border: 1px solid #333; color: #777;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-family: 'Orbitron'; font-size: 0.8rem;
+        }
+        .matrix-btn:hover { border-color: var(--neon-cyan); color: white; }
+        .matrix-btn.active { background: var(--neon-cyan); color: black; font-weight: bold; }
+        .matrix-btn.answered { border-color: var(--neon-green); color: var(--neon-green); }
+
+        /* CONTENT */
+        .content-area {
+            flex: 1; background: var(--panel-bg); border: 1px solid rgba(255, 0, 85, 0.2);
+            border-right: 4px solid var(--neon-pink); padding: 30px;
+            display: flex; flex-direction: column; justify-content: center; position: relative;
+        }
+
+        .q-text { font-size: 1.4rem; margin-bottom: 20px; line-height: 1.5; }
+        
+        .option-card {
+            background: rgba(255,255,255,0.05); padding: 15px; margin-bottom: 10px;
+            border: 1px solid transparent; cursor: pointer; transition: 0.2s;
+        }
+        .option-card:hover { border-color: var(--neon-cyan); background: rgba(0,243,255,0.1); }
+        .option-card.selected { background: var(--neon-cyan); color: black; font-weight: bold; }
+
+        .btn-action {
+            background: linear-gradient(90deg, #ff0055, #ff4400); color: white; border: none;
+            padding: 15px; width: 100%; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; margin-top: 10px;
+        }
+
+        /* OVERLAYS */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95);
+            z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .hidden { display: none; }
+
+    </style>
+</head>
+<body>
+
+<div id="loading" class="overlay hidden">
+    <h2 style="color: white; font-family: 'Orbitron'">MENGIRIM DATA...</h2>
+</div>
+
+<div id="result" class="overlay hidden">
+    <h1 style="color: var(--neon-green); font-family: 'Orbitron'; font-size: 3rem;">SELESAI</h1>
+    <p style="color: #aaa;">Nilai Anda:</p>
+    <div id="score-display" style="font-size: 5rem; color: white; font-weight: bold;">0</div>
+    <p id="cheat-display" style="color: red; margin-top: 20px;"></p>
+    <button onclick="location.reload()" style="padding: 10px 30px; background: #333; color: white; border: 1px solid white; cursor: pointer; margin-top: 20px;">ULANGI</button>
+</div>
+
+<div class="main-wrapper">
+    <div class="sidebar">
+        <div class="header">SYSTEM EXAM</div>
+        <label>Nama Siswa:</label>
+        <input type="text" id="nama" placeholder="Nama Lengkap">
+        <label>Kelas:</label>
+        <input type="text" id="kelas" placeholder="Contoh: X TJKT 1">
+
+        <div style="margin: 10px 0; font-size: 0.8rem; color: #777;">NAVIGASI SOAL</div>
+        <div class="matrix-grid" id="matrix"></div>
+
+        <button class="btn-action" onclick="submitExam()">KIRIM JAWABAN</button>
+    </div>
+
+    <div class="content-area">
+        <div style="position: absolute; top: 20px; left: 30px; color: var(--neon-pink); font-family: 'Orbitron';">
+            SOAL NO <span id="q-idx">1</span> / 50
+        </div>
+        
+        <div id="q-text" class="q-text">Sedang memuat soal...</div>
+        <div id="options-box"></div>
+
+        <div style="margin-top: 30px; display: flex; gap: 10px;">
+            <button onclick="prevQ()" style="flex: 1; padding: 10px; background: transparent; border: 1px solid var(--text-dim); color: var(--text-dim); cursor: pointer;">SEBELUMNYA</button>
+            <button onclick="nextQ()" style="flex: 1; padding: 10px; background: transparent; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); cursor: pointer;">SELANJUTNYA</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 1. CONFIGURATION ---
+    // PENTING: GANTI URL DI BAWAH INI DENGAN URL GOOGLE APPS SCRIPT ANDA
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzev-A-tUgxXIGZpuKZ9OuJgbny-tRNWXKP_3CJMC5FZrxdtZ3aRimMZ5R3OiYZTpGyvA/exec'; 
+
+    // --- 2. DATABASE SOAL (50 SOAL) ---
+    const questions = [
+       // Ms. Office
+        { q: "Jika Anda melakukan kesalahan pengetikan di Microsoft Word, kombinasi tombol keyboard (shortcut) untuk membatalkan perintah terakhir (Undo) adalah...", o: ["Ctrl + Z", "Ctrl + Y", "Ctrl + U", "Ctrl + I", "Ctrl + B"], a: "Ctrl + Z" },
+        { q: "Pada Microsoft Excel, simbol yang digunakan untuk mengunci sel agar tidak berubah saat disalin (Absolute Reference), misalnya $A$1, adalah...", o: ["Persen (%)", "Pagar (#)", "Dollar ($)", "Dan (&)", "At (@)"], a: "Dollar ($)" },
+        { q: "Orientasi kertas yang memanjang ke samping (horizontal) pada pengaturan Page Layout disebut...", o: ["Portrait", "Landscape", "Vertical", "A4", "Margin"], a: "Landscape" },
+        { q: "Tombol keyboard untuk memulai presentasi (Slide Show) dari halaman pertama pada Microsoft PowerPoint adalah...", o: ["F1", "F2", "F4", "F5", "F12"], a: "F5" },
+        { q: "Fungsi logika pada Excel yang digunakan untuk menguji suatu kondisi Benar atau Salah adalah...", o: ["=SUM()", "=IF()", "=LOOKUP()", "=COUNT()", "=PROPER()"], a: "=IF()" },
+        
+        // Sistem Komputer
+        { q: "Bagian dalam CPU yang bertugas melakukan operasi aritmatika (penjumlahan, pengurangan) dan logika adalah...", o: ["CU (Control Unit)", "ALU (Arithmetic Logic Unit)", "Register", "Memory", "Bus"], a: "ALU (Arithmetic Logic Unit)" },
+        { q: "Di bawah ini yang merupakan contoh perangkat masukan (Input Device) yang berfungsi menangkap suara adalah...", o: ["Speaker", "Printer", "Microphone", "Plotter", "Monitor"], a: "Microphone" },
+        { q: "Pengguna komputer atau orang yang mengoperasikan perangkat komputer disebut dengan istilah...", o: ["Hardware", "Software", "Brainware", "Malware", "Spyware"], a: "Brainware" },
+        { q: "Media penyimpanan data yang menggunakan teknologi chip memori (tanpa piringan berputar) sehingga lebih cepat dari Harddisk biasa adalah...", o: ["DVD", "Floppy Disk", "SSD (Solid State Drive)", "HDD (Hard Disk Drive)", "Magnetic Tape"], a: "SSD (Solid State Drive)" },
+        { q: "Sistem operasi yang paling umum digunakan pada perangkat mobile (smartphone) saat ini adalah...", o: ["Windows Server", "Android", "Ubuntu", "MS-DOS", "UNIX"], a: "Android" },
+
+        // Konversi Bilangan
+        { q: "Bilangan biner 1100 jika dikonversi ke desimal adalah...", o: ["10", "11", "12", "13", "14"], a: "12" },
+        { q: "Sistem bilangan yang menggunakan basis 8 (angka 0 s.d 7) disebut...", o: ["Biner", "Desimal", "Heksadesimal", "Oktal", "Numerik"], a: "Oktal" },
+        { q: "Satuan unit data terkecil dalam sistem komputer yang hanya bernilai 0 atau 1 disebut...", o: ["Byte", "Bit", "Kilobyte", "Megabyte", "Hertz"], a: "Bit" },
+        { q: "Bilangan desimal 7 jika diubah ke dalam bentuk biner adalah...", o: ["011", "101", "110", "111", "100"], a: "111" },
+        { q: "Dalam sistem heksadesimal, angka 11 dalam desimal dilambangkan dengan huruf...", o: ["A", "B", "C", "D", "E"], a: "B" },
+
+        // Jaringan Komputer
+        { q: "Jaringan komputer yang cakupannya hanya meliputi satu gedung atau satu ruangan (misal: lab sekolah) disebut...", o: ["MAN", "WAN", "LAN", "Internet", "Intranet"], a: "LAN" },
+        { q: "Media transmisi jaringan nirkabel (Wireless) menggunakan sarana...", o: ["Kabel Tembaga", "Serat Optik", "Gelombang Radio", "Kabel Coaxial", "Kabel Listrik"], a: "Gelombang Radio" },
+        { q: "Perangkat keras yang berfungsi sebagai pemancar sinyal WiFi agar perangkat lain bisa terhubung tanpa kabel adalah...", o: ["Modem", "Access Point", "Switch", "NIC", "Konektor"], a: "Access Point" },
+        { q: "Perintah yang digunakan untuk menguji konektivitas atau 'memanggil' IP address lain di jaringan adalah...", o: ["ping", "connect", "netstat", "call", "push"], a: "ping" },
+        { q: "Topologi jaringan yang memiliki satu titik pusat (switch/hub) dimana semua komputer terhubung ke titik tersebut disebut topologi...", o: ["Bus", "Ring", "Mesh", "Star", "Tree"], a: "Star" },
+
+        // IP Address
+        { q: "Layanan di server yang memberikan IP Address secara otomatis kepada klien disebut...", o: ["DNS Server", "DHCP Server", "Web Server", "Mail Server", "FTP Server"], a: "DHCP Server" },
+        { q: "IP Address versi 6 (IPv6) memiliki panjang alamat sebesar...", o: ["32 bit", "64 bit", "128 bit", "256 bit", "512 bit"], a: "128 bit" },
+        { q: "Sistem yang bertugas menerjemahkan nama domain (seperti google.com) menjadi IP Address adalah...", o: ["DHCP", "TCP/IP", "HTTP", "DNS", "URL"], a: "DNS" },
+        { q: "Manakah di bawah ini yang merupakan format penulisan IP Address v4 yang benar?", o: ["192.168.1.1.1", "192.168.1", "192:168:1:1", "192.168.1.25", "999.999.999.999"], a: "192.168.1.25" },
+        { q: "Jenis IP Address yang angkanya selalu berubah-ubah setiap kali perangkat terkoneksi ulang disebut...", o: ["IP Statis", "IP Dinamis", "IP Public", "IP Private", "IP Dedicated"], a: "IP Dinamis" },
+
+        // SQL
+        { q: "Perintah SQL untuk menghapus sebuah tabel beserta struktur dan isinya secara permanen adalah...", o: ["DELETE TABLE", "ERASE TABLE", "DROP TABLE", "REMOVE TABLE", "CUT TABLE"], a: "DROP TABLE" },
+        { q: "Untuk menampilkan data dari kolom 'nama' saja pada tabel 'siswa', perintahnya adalah...", o: ["SELECT * FROM siswa", "SELECT nama FROM siswa", "SHOW nama FROM siswa", "GET nama FROM siswa", "DISPLAY nama"], a: "SELECT nama FROM siswa" },
+        { q: "Simbol wildcard yang digunakan dengan operator LIKE untuk mencari pola huruf tertentu adalah...", o: ["* (Bintang)", "% (Persen)", "? (Tanda tanya)", "# (Pagar)", "& (Dan)"], a: "% (Persen)" },
+        { q: "Perintah SUM() dalam SQL berfungsi untuk...", o: ["Menghitung rata-rata", "Menghitung jumlah total nilai", "Menghitung banyaknya data", "Mencari nilai tertinggi", "Mencari nilai terendah"], a: "Menghitung jumlah total nilai" },
+        { q: "Operator logika yang mengharuskan kedua kondisi bernilai BENAR agar data ditampilkan adalah...", o: ["OR", "NOT", "AND", "XOR", "NOR"], a: "AND" },
+        { q: "Agar hasil tampilan kolom pada query memiliki nama lain (alias), kita menggunakan kata kunci...", o: ["AS", "IS", "TO", "BE", "BY"], a: "AS" },
+        { q: "Untuk mencari nilai tertinggi (maksimal) dari sebuah kolom harga, perintahnya adalah...", o: ["SELECT HIGH(harga)", "SELECT TOP(harga)", "SELECT MAX(harga)", "SELECT UPPER(harga)", "SELECT BIG(harga)"], a: "SELECT MAX(harga)" },
+        { q: "Perintah LIMIT 5 pada akhir query berfungsi untuk...", o: ["Menghapus 5 data", "Menambah 5 data", "Membatasi tampilan hanya 5 baris data", "Mengurutkan 5 data", "Melewati 5 data"], a: "Membatasi tampilan hanya 5 baris data" },
+        { q: "Kunci tamu yang menghubungkan satu tabel dengan tabel lain disebut...", o: ["Primary Key", "Foreign Key", "Super Key", "Candidate Key", "Alternate Key"], a: "Foreign Key" },
+        { q: "Perintah SQL yang digunakan untuk menampilkan data unik saja (menghilangkan duplikat) adalah...", o: ["DISTINCT", "UNIQUE", "DIFFERENT", "SINGLE", "ONLY"], a: "DISTINCT" },
+
+        // HTML
+        { q: "Tag HTML yang digunakan untuk membuat daftar poin tidak berurutan (bullet points) adalah...", o: ["<ol>", "<li>", "<dl>", "<ul>", "<list>"], a: "<ul>" },
+        { q: "Tag heading yang menghasilkan ukuran teks paling besar adalah...", o: ["<h6>", "<head>", "<h3>", "<h1>", "<header>"], a: "<h1>" },
+        { q: "Dalam pembuatan tabel HTML, tag <tr> berfungsi untuk membuat...", o: ["Kolom Tabel", "Baris Tabel", "Judul Tabel", "Data Tabel", "Garis Tabel"], a: "Baris Tabel" },
+        { q: "Deklarasi yang wajib dituliskan di baris paling atas dokumen HTML5 adalah...", o: ["<html>", "<head>", "<!DOCTYPE html>", "<xml>", "<body onload>"], a: "<!DOCTYPE html>" },
+        { q: "Tag yang digunakan untuk membuat tombol yang bisa diklik adalah...", o: ["<click>", "<button>", "<tombol>", "<press>", "<action>"], a: "<button>" },
+
+        // CSS
+        { q: "Jika ID selector menggunakan tanda pagar (#), maka Class selector pada CSS menggunakan tanda...", o: ["Titik (.)", "Koma (,)", "Titik dua (:)", "Bintang (*)", "Strip (-)"], a: "Titik (.)" },
+        { q: "Properti CSS untuk mengatur jarak di bagian LUAR batas elemen (border) adalah...", o: ["Padding", "Margin", "Border-spacing", "Width", "Height"], a: "Margin" },
+        { q: "Untuk mengubah warna latar belakang sebuah elemen, properti yang digunakan adalah...", o: ["color", "bgcolor", "background-color", "theme-color", "back-color"], a: "background-color" },
+
+        // PHP
+        { q: "Tanda yang digunakan untuk membuat komentar satu baris di PHP adalah...", o: ["", "/* Komentar */", "// Komentar", "** Komentar", "-- Komentar"], a: "// Komentar" },
+        { q: "Struktur kontrol untuk membuat percabangan logika 'jika... maka...' pada PHP adalah...", o: ["for... loop", "if... else", "switch... on", "while... do", "try... catch"], a: "if... else" },
+        { q: "Simbol operator untuk menggabungkan dua string (teks) dalam PHP adalah...", o: ["Tanda tambah (+)", "Tanda titik (.)", "Tanda koma (,)", "Tanda dan (&)", "Tanda pip (||)"], a: "Tanda titik (.)" },
+
+        // Embedded
+        { q: "Komponen elektronika yang menyala (mengeluarkan cahaya) jika dialiri arus listrik dan sering dipakai sebagai indikator output di Arduino adalah...", o: ["Resistor", "Kapasitor", "LED", "Transistor", "Switch"], a: "LED" },
+        { q: "Istilah GPIO pada board mikrokontroler (seperti ESP8266/Raspberry Pi) singkatan dari...", o: ["General Purpose Input Output", "Graphic Protocol Input Output", "Global Position In Out", "General Power Internal Output", "Ground Power Input Output"], a: "General Purpose Input Output" },
+        { q: "Pin yang berfungsi sebagai penyedia tegangan positif (sumber daya) pada modul sensor biasanya berlabel...", o: ["GND", "VCC", "DAT", "CLK", "NC"], a: "VCC" },
+        { q: "Komponen yang berfungsi mengubah sinyal listrik menjadi gerakan fisik (contoh: motor servo) disebut...", o: ["Sensor", "Mikrokontroler", "Aktuator", "Resistor", "Induktor"], a: "Aktuator" }
+    ];
+
+    // --- 3. LOGIC APLIKASI ---
+    let currentIdx = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+    let violationCount = 0;
+    let isExamStarted = false;
+
+    function init() {
+        renderMatrix();
+        loadQ(0);
+        // Aktifkan anti-curang setelah 5 detik
+        setTimeout(() => { isExamStarted = true; }, 5000);
+    }
+
+    function renderMatrix() {
+        const matrixEl = document.getElementById('matrix');
+        matrixEl.innerHTML = '';
+        questions.forEach((_, idx) => {
+            const btn = document.createElement('div');
+            btn.className = `matrix-btn ${idx === currentIdx ? 'active' : ''} ${userAnswers[idx] ? 'answered' : ''}`;
+            btn.innerText = idx + 1;
+            btn.onclick = () => loadQ(idx);
+            matrixEl.appendChild(btn);
+        });
+    }
+
+    function loadQ(idx) {
+        currentIdx = idx;
+        const q = questions[idx];
+        document.getElementById('q-idx').innerText = idx + 1;
+        document.getElementById('q-text').innerText = q.q;
+
+        const optsEl = document.getElementById('options-box');
+        optsEl.innerHTML = '';
+        
+        q.o.forEach(opt => {
+            const div = document.createElement('div');
+            div.className = `option-card ${userAnswers[idx] === opt ? 'selected' : ''}`;
+            div.innerText = opt;
+            div.onclick = () => {
+                userAnswers[idx] = opt;
+                renderMatrix();
+                loadQ(idx);
+            };
+            optsEl.appendChild(div);
+        });
+        
+        renderMatrix(); // Update warna tombol matrix
+    }
+
+    function nextQ() { if(currentIdx < questions.length - 1) loadQ(currentIdx + 1); }
+    function prevQ() { if(currentIdx > 0) loadQ(currentIdx - 1); }
+
+    // --- ANTI CHEAT ---
+    document.addEventListener("visibilitychange", () => {
+        if (isExamStarted && document.visibilityState === 'hidden') {
+            violationCount++;
+            document.title = "⚠️ PELANGGARAN TERDETEKSI";
+        } else if (isExamStarted) {
+            document.title = "Sistem Ujian";
+        }
+    });
+
+    // --- SUBMIT ---
+    function submitExam() {
+        const nama = document.getElementById('nama').value;
+        const kelas = document.getElementById('kelas').value;
+
+        if(scriptURL === 'MASUKKAN_URL_APPS_SCRIPT_DISINI') {
+            alert("ERROR: Guru belum memasukkan URL Google Apps Script!");
+            return;
+        }
+
+        if (!nama || !kelas) {
+            alert("Harap isi Nama dan Kelas!");
+            return;
+        }
+
+        const unans = userAnswers.filter(x => x === null).length;
+        if (unans > 0) {
+            if(!confirm(`Masih ada ${unans} soal kosong. Yakin kirim?`)) return;
+        }
+
+        // Hitung Skor
+        let correct = 0;
+        userAnswers.forEach((ans, i) => { if (ans === questions[i].a) correct++; });
+        const score = (correct / questions.length) * 100;
+
+        // Tampilkan Loading
+        document.getElementById('loading').classList.remove('hidden');
+
+        const data = {
+            nama: nama,
+            kelas: kelas,
+            nilai: score,
+            jawaban: userAnswers, // Kirim array jawaban langsung
+            curang: violationCount + " kali"
+        };
+
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(() => {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('score-display').innerText = score.toFixed(0);
+            
+            const cheatEl = document.getElementById('cheat-display');
+            if (violationCount > 0) {
+                cheatEl.innerText = `⚠️ Terdeteksi ${violationCount} kali keluar aplikasi!`;
+            } else {
+                cheatEl.innerText = "✅ Tidak ada kecurangan.";
+                cheatEl.style.color = "lightgreen";
+            }
+        })
+        .catch(err => {
+            document.getElementById('loading').classList.add('hidden');
+            alert("Gagal terhubung ke server. Cek koneksi internet Anda.");
+            console.error(err);
+        });
+    }
+
+    // Jalankan aplikasi
+    init();
+
+</script>
+</body>
+</html>
