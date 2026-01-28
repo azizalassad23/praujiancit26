@@ -4,141 +4,176 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Ujian Informatika</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --secondary: #64748b;
-            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #cbebff 100%);
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --accent: #6b46c1;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background: var(--bg-gradient);
+            /* Background Animasi */
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-main);
+            color: var(--text-dark);
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
             max-width: 900px;
             width: 90%;
-            padding: 20px;
+            padding: 40px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 10px;
-            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: -1px;
         }
 
         p.subtitle {
-            font-size: 1.1rem;
-            color: var(--secondary);
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
         }
 
         .grid-menu {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
         }
 
         .card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 30px;
+            border-radius: 20px;
+            padding: 35px;
             text-decoration: none;
-            color: inherit;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-dark);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy effect */
             position: relative;
-            border: 1px solid rgba(255,255,255,0.5);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            border: 2px solid transparent;
         }
 
         .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border-color: var(--primary);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        /* Dekorasi lingkaran di background card */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            opacity: 0.1;
+            transition: 0.5s;
+        }
+
+        .card:hover::before {
+            transform: scale(1.2);
+            opacity: 0.2;
         }
 
         .card-icon {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 20px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .card h2 {
             margin: 0 0 10px 0;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
         }
 
         .card p {
-            margin: 0 0 20px 0;
-            color: var(--secondary);
-            line-height: 1.5;
+            margin: 0 0 30px 0;
+            color: var(--text-light);
+            line-height: 1.6;
             font-size: 0.95rem;
         }
 
         .btn-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--primary);
+            display: block;
+            padding: 15px;
+            background: var(--primary-gradient);
             color: white;
-            border-radius: 8px;
+            border-radius: 12px;
             font-weight: 600;
             text-align: center;
-            transition: background 0.2s;
-            margin-top: auto;
+            transition: opacity 0.2s;
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4);
         }
 
-        .card:hover .btn-link {
-            background-color: #1d4ed8;
+        .btn-link:hover {
+            opacity: 0.9;
         }
 
-        /* Badge untuk ujian terbaru */
         .badge-new {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #10b981;
+            top: 20px;
+            right: 20px;
+            background: #00b894;
             color: white;
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.75rem;
-            font-weight: bold;
+            font-weight: 700;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            box-shadow: 0 2px 10px rgba(0, 184, 148, 0.4);
         }
 
         .badge-done {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #94a3b8;
-            color: white;
-            padding: 5px 12px;
+            top: 20px;
+            right: 20px;
+            background: #cbd5e0;
+            color: #4a5568;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.75rem;
-            font-weight: bold;
+            font-weight: 700;
         }
 
-        /* Responsive adjust */
         @media (max-width: 600px) {
-            h1 { font-size: 2rem; }
-            .grid-menu { grid-template-columns: 1fr; }
+            h1 { font-size: 2.2rem; }
+            .container { padding: 20px; width: 100%; }
         }
     </style>
 </head>
@@ -146,32 +181,30 @@
 
     <div class="container">
         <header>
-            <h1>Portal Ujian Informatika</h1>
-            <p class="subtitle">SMA Kelas 12 - Pilih modul ujian yang tersedia di bawah ini</p>
+            <h1>Portal Ujian</h1>
+            <p class="subtitle">Informatika Kelas 12 - Pilih Paket Soal</p>
         </header>
 
         <div class="grid-menu">
             
             <a href="pra-to-1.html" class="card">
                 <span class="badge-done">Selesai</span>
-                <div class="card-icon">📚</div>
                 <h2>Pra - TO 1</h2>
-                <p>Ujian pendalaman materi tahap pertama. Meliputi dasar-dasar informatika dan logika algoritma dasar.</p>
-                <span class="btn-link">Buka Soal</span>
+                <p>Ujian pendalaman materi tahap pertama. Dasar logika dan algoritma.</p>
+                <span class="btn-link">Lihat Soal</span>
             </a>
 
             <a href="pra-to-2.html" class="card">
                 <span class="badge-new">Terbaru</span>
-                <div class="card-icon">💻</div>
                 <h2>Pra - TO 2</h2>
-                <p>Materi komprehensif: Packet Tracer, C++, SQL Database, Embedded System (Arduino), dan HTML/CSS.</p>
-                <span class="btn-link">Kerjakan Sekarang</span>
+                <p>Materi Lengkap: Packet Tracer, C++, SQL, Arduino & Web Design.</p>
+                <span class="btn-link">Mulai Mengerjakan</span>
             </a>
 
         </div>
 
-        <footer style="text-align: center; margin-top: 50px; color: var(--secondary); font-size: 0.9rem;">
-            &copy; 2026 Tim Guru Informatika. Selamat Mengerjakan.
+        <footer style="text-align: center; margin-top: 60px; color: rgba(255,255,255,0.8); font-size: 0.85rem;">
+            &copy; 2026 Tim Guru Informatika.
         </footer>
     </div>
 
