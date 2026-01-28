@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian Informatika Kelas 12</title>
+    <style>
+        :root { --primary: #2563eb; --light: #f3f4f6; --text: #1f2937; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light); color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1, h2 { text-align: center; color: var(--primary); }
+        
+        /* Login Section */
+        #login-section { display: block; text-align: center; }
+        input, select { padding: 10px; margin: 10px; width: 80%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px; }
+        
+        /* Exam Section */
+        #exam-section { display: none; }
+        .question-box { margin-bottom: 20px; padding: 20px; border-bottom: 1px solid #eee; }
+        .question-text { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; white-space: pre-wrap; }
+        
+        .options label { display: block; padding: 10px; margin: 5px 0; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .options label:hover { background: #e0e7ff; }
+        .options input[type="radio"] { margin-right: 10px; }
+        .options input[type="radio"]:checked + span { font-weight: bold; color: var(--primary); }
+        .options label.selected { border-color: var(--primary); background: #eff6ff; }
+
+        /* Navigation Grid */
+        .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 2px solid #eee; }
+        .nav-btn { padding: 8px; border: 1px solid #ccc; background: white; cursor: pointer; border-radius: 4px; }
+        .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .nav-btn.answered { background: #10b981; color: white; border-color: #10b981; }
+
+        /* Buttons */
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 1em; margin-top: 20px; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-nav { display: flex; justify-content: space-between; margin-top: 20px; }
+        .btn-submit { background: #dc2626; width: 100%; margin-top: 30px; }
+
+        /* Code Block Styling */
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 0.9em; }
+        code { font-family: 'Consolas', 'Monaco', monospace; }
+
+        /* Result Section */
+        #result-section { display: none; text-align: center; }
+        .score-circle { width: 150px; height: 150px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3em; margin: 20px auto; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="login-section">
+        <h2>Ujian Informatika</h2>
+        <p>Silakan isi identitas untuk memulai</p>
+        <input type="text" id="nama" placeholder="Nama Lengkap" required>
+        <br>
+        <input type="text" id="kelas" placeholder="Kelas (Contoh: 12 IPA 1)" required>
+        <br>
+        <button class="btn" onclick="startExam()">Mulai Ujian</button>
+    </div>
+
+    <div id="exam-section">
+        <div id="question-container">
+            </div>
+
+        <div class="btn-nav">
+            <button class="btn" id="prevBtn" onclick="changeQuestion(-1)">Sebelumnya</button>
+            <button class="btn" id="nextBtn" onclick="changeQuestion(1)">Selanjutnya</button>
+        </div>
+
+        <div class="nav-grid" id="nav-grid">
+            </div>
+
+        <button class="btn btn-submit" onclick="finishExam()">Selesai & Kirim Jawaban</button>
+    </div>
+
+    <div id="result-section">
+        <h2>Hasil Ujian</h2>
+        <p id="student-info"></p>
+        <div class="score-circle" id="score-display">0</div>
+        <p id="status-upload">Mengirim data ke server...</p>
+    </div>
+</div>
+
+<script>
+    // --- DATABASE SOAL (50 Soal Lengkap dengan Revisi & HTML Escaping) ---
+    // Saya menggunakan &lt; dan &gt; agar tag HTML tampil sebagai teks, bukan kode.
+    const questions = [
+        {id:1, q:"Komponen fisik pada komputer yang dapat disentuh, dilihat, atau dipindahkan disebut...", a:"C", ops:{A:"Software", B:"Brainware", C:"Hardware", D:"Freeware", E:"Malware"}},
+        {id:2, q:"Siklus pengolahan data pada sistem komputer yang benar adalah...", a:"B", ops:{A:"Output -> Process -> Input", B:"Input -> Process -> Output", C:"Process -> Input -> Output", D:"Input -> Output -> Process", E:"Output -> Input -> Process"}},
+        {id:3, q:"(Ms. Excel) Jika sel A1 berisi nilai 80 dan sel B1 berisi nilai 70, apakah hasil dari rumus berikut:\n=IF(AND(A1>75; B1>75); \"Lulus\"; \"Remedial\")", a:"B", ops:{A:"Lulus", B:"Remedial", C:"TRUE", D:"FALSE", E:"#VALUE!"}},
+        {id:4, q:"Fitur pada Microsoft Word yang memungkinkan pengguna membuat surat massal adalah...", a:"B", ops:{A:"Table of Contents", B:"Mail Merge", C:"Track Changes", D:"Cross-reference", E:"Bibliography"}},
+        {id:5, q:"Perangkat lunak sistem operasi yang bersifat open source dan memiliki logo pinguin adalah...", a:"C", ops:{A:"Windows", B:"MacOS", C:"Linux", D:"Android", E:"iOS"}},
+        {id:6, q:"Aplikasi Ms. Office yang paling tepat untuk presentasi dengan animasi adalah...", a:"D", ops:{A:"Ms. Access", B:"Ms. Word", C:"Ms. Excel", D:"Ms. PowerPoint", E:"Ms. Publisher"}},
+        {id:7, q:"Kepanjangan dari LAN adalah...", a:"A", ops:{A:"Local Area Network", B:"Large Area Network", C:"Local Access Network", D:"Long Area Network", E:"Limited Access Network"}},
+        {id:8, q:"Topologi jaringan di mana setiap komputer terhubung ke satu perangkat pusat disebut...", a:"C", ops:{A:"Bus", B:"Ring", C:"Star", D:"Mesh", E:"Tree"}},
+        {id:9, q:"Kabel jaringan yang paling umum digunakan untuk instalasi LAN dalam gedung adalah...", a:"C", ops:{A:"Coaxial", B:"Fiber Optic", C:"UTP", D:"STP", E:"HDMI"}},
+        {id:10, q:"Subnet mask default Kelas C adalah 255.255.255.0. Dalam notasi CIDR ditulis...", a:"C", ops:{A:"/8", B:"/16", C:"/24", D:"/32", E:"/12"}},
+        {id:11, q:"Perangkat yang menghubungkan dua jaringan berbeda segmen/protokol adalah...", a:"D", ops:{A:"Hub", B:"Switch", C:"Bridge", D:"Router", E:"Repeater"}},
+        {id:12, q:"Mengapa kabel Cross-Over diperlukan untuk menghubungkan Switch ke Switch (non Auto-MDIX)?", a:"B", ops:{A:"Kecepatan ganda", B:"Pin TX (kirim) harus bertemu Pin RX (terima)", C:"Agar tidak korsleting", D:"Protokol berbeda", E:"Mencegah virus"}},
+        {id:13, q:"Pada Packet Tracer, kabel untuk menghubungkan PC ke PC secara langsung adalah...", a:"C", ops:{A:"Console Cable", B:"Straight-Through", C:"Cross-Over", D:"Fiber Cable", E:"Phone Cable"}},
+        {id:14, q:"Ekstensi file standar proyek Cisco Packet Tracer adalah...", a:"B", ops:{A:".docx", B:".pkt", C:".html", D:".pptx", E:".cpp"}},
+        {id:15, q:"Ikon 'Petir' oranye pada menu Connections Packet Tracer berfungsi untuk...", a:"B", ops:{A:"Menghapus kabel", B:"Memilih jenis kabel otomatis", C:"Mengirim PDU", D:"Reset perangkat", E:"Konek internet"}},
+        {id:16, q:"Menu untuk setting IP Address statis pada PC di Packet Tracer adalah...", a:"C", ops:{A:"Command Prompt", B:"Web Browser", C:"IP Configuration", D:"Terminal", E:"VPN"}},
+        {id:17, q:"Mode untuk melihat proses pengiriman paket step-by-step di Packet Tracer adalah...", a:"B", ops:{A:"Realtime Mode", B:"Simulation Mode", C:"Physical Mode", D:"Logical Mode", E:"CLI Mode"}},
+        {id:18, q:"Ikon untuk mengirim 'Simple PDU' (tes ping sederhana) berbentuk...", a:"A", ops:{A:"Amplop tertutup (+)", B:"Kaca pembesar", C:"Tanda silang", D:"Printer", E:"Folder"}},
+        {id:19, q:"Simbol flowchart untuk pengambilan keputusan (Decision) berbentuk...", a:"C", ops:{A:"Persegi Panjang", B:"Lingkaran", C:"Belah Ketupat", D:"Jajar Genjang", E:"Oval"}},
+        {id:20, q:"Perintah output teks ke layar dalam C++ adalah...", a:"B", ops:{A:"cin >>", B:"cout <<", C:"scanf()", D:"print()", E:"input()"}},
+        {id:21, q:"Tipe data untuk bilangan pecahan (desimal) adalah...", a:"D", ops:{A:"int", B:"char", C:"string", D:"float", E:"bool"}},
+        {id:22, q:"Output kode berikut:\nint x = 10; while (x > 0) { cout << x << \" \"; x = x - 3; }", a:"B", ops:{A:"10 9 8 7 6 5 4 3 2 1", B:"10 7 4 1", C:"10 7 4 1 -2", D:"7 4 1", E:"Error"}},
+        {id:23, q:"Operator logika 'ATAU' dalam C++ adalah...", a:"B", ops:{A:"&&", B:"||", C:"!", D:"!=", E:"=="}},
+        {id:24, q:"Fungsi return 0; pada main() berarti...", a:"C", ops:{A:"Ulang program", B:"Stop paksa", C:"Program sukses", D:"Cetak 0", E:"Hapus memori"}},
+        {id:25, q:"Perintah SQL membuat database baru...", a:"B", ops:{A:"CREATE NEW DATABASE s;", B:"CREATE DATABASE s;", C:"MAKE DATABASE s;", D:"NEW DATABASE s;", E:"ADD DATABASE s;"}},
+        {id:26, q:"SELECT nama FROM siswa WHERE (nilai_mtk > 80 OR ekskul = 'Robotik') AND kelas = '12';\nMenampilkan siswa yang...", a:"C", ops:{A:"Nilai MTK > 80", B:"Anggota Robotik", C:"Kelas 12 DAN (Nilai > 80 ATAU Robotik)", D:"Kelas 12 DAN Nilai > 80 DAN Robotik", E:"Semua kelas 12"}},
+        {id:27, q:"Jenis JOIN yang hanya menampilkan data jika ada kecocokan di kedua tabel...", a:"C", ops:{A:"LEFT JOIN", B:"RIGHT JOIN", C:"INNER JOIN", D:"FULL JOIN", E:"CROSS JOIN"}},
+        {id:28, q:"Kueri menghapus tabel guru...", a:"C", ops:{A:"DELETE TABLE", B:"REMOVE TABLE", C:"DROP TABLE", D:"ERASE TABLE", E:"CLEAR TABLE"}},
+        {id:29, q:"Constraint agar kolom tidak boleh duplikat dan tidak boleh kosong...", a:"C", ops:{A:"UNIQUE", B:"NOT NULL", C:"PRIMARY KEY", D:"FOREIGN KEY", E:"DEFAULT"}},
+        {id:30, q:"Apa yang terjadi jika menghapus data Parent Table yang sedang dipakai di Child Table sebagai Foreign Key?", a:"C", ops:{A:"Terhapus otomatis", B:"Reset database", C:"Gagal (Error Integrity)", D:"Data Parent hilang, Child tetap", E:"Berubah jadi NULL"}},
+        {id:31, q:"Perintah menambah data baru ke tabel...", a:"B", ops:{A:"ADD INTO", B:"INSERT INTO", C:"UPDATE", D:"PUSHDOWN", E:"CREATE DATA"}},
+        {id:32, q:"Otak dari sistem embedded (Arduino) disebut...", a:"C", ops:{A:"Resistor", B:"Kapasitor", C:"Mikrokontroler", D:"Sensor", E:"Aktuator"}},
+        {id:33, q:"Fungsi resistor Pull-Up pada tombol input Arduino adalah...", a:"B", ops:{A:"Cegah arus pendek", B:"Mencegah floating (sinyal mengambang)", C:"Ubah ke analog", D:"Tambah tegangan", E:"Hemat baterai"}},
+        {id:34, q:"Pin Arduino untuk membaca nilai potensiometer diawali huruf...", a:"B", ops:{A:"D", B:"A", C:"TX", D:"RX", E:"GND"}},
+        {id:35, q:"Fungsi void setup() dieksekusi...", a:"A", ops:{A:"Satu kali saat start", B:"Berulang-ulang", C:"Dua kali", D:"Tergantung sensor", E:"Saat tombol ditekan"}},
+        {id:36, q:"Perintah untuk memanipulasi lebar pulsa (PWM/Redup-Terang LED) di Arduino...", a:"B", ops:{A:"digitalRead()", B:"analogWrite()", C:"pulseIn()", D:"tone()", E:"shiftOut()"}},
+        {id:37, q:"Keunggulan NodeMCU ESP8266 untuk IoT adalah...", a:"B", ops:{A:"Layar sentuh", B:"Modul Wi-Fi terintegrasi", C:"Ukuran besar", D:"Tanpa listrik", E:"Bahasa Assembly"}},
+        {id:38, q:"Struktur dasar HTML diawali dan diakhiri tag...", a:"C", ops:{A:"&lt;body&gt;", B:"&lt;head&gt;", C:"&lt;html&gt;", D:"&lt;title&gt;", E:"&lt;start&gt;"}},
+        {id:39, q:"Tag untuk membuat bullet points (tidak berurutan)...", a:"B", ops:{A:"&lt;ol&gt;", B:"&lt;ul&gt;", C:"&lt;li&gt;", D:"&lt;dl&gt;", E:"&lt;list&gt;"}},
+        {id:40, q:"Atribut wajib pada tag img untuk lokasi file...", a:"C", ops:{A:"href", B:"link", C:"src", D:"alt", E:"path"}},
+        {id:41, q:"CSS: #teks { color: blue; } vs .teks { color: red; }. Warna elemen id='teks' class='teks' adalah...", a:"B", ops:{A:"Merah", B:"Biru (ID lebih prioritas)", C:"Hitam", D:"Ungu", E:"Merah (terakhir)"}},
+        {id:42, q:"Properti CSS untuk warna latar belakang...", a:"C", ops:{A:"color", B:"font-color", C:"background-color", D:"bgcolor", E:"back-color"}},
+        {id:43, q:"Tag untuk membuat hyperlink...", a:"A", ops:{A:"&lt;a href&gt;", B:"&lt;link src&gt;", C:"&lt;href target&gt;", D:"&lt;hyperlink&gt;", E:"&lt;connect&gt;"}},
+        {id:44, q:"Tag &lt;tr&gt; berfungsi membuat...", a:"D", ops:{A:"Kolom", B:"Judul", C:"Sel", D:"Baris tabel", E:"Garis"}},
+        {id:45, q:"Kepanjangan CSS...", a:"C", ops:{A:"Computer Style", B:"Creative Style", C:"Cascading Style Sheets", D:"Colorful Style", E:"Code Style"}},
+        {id:46, q:"Tag untuk menebalkan huruf...", a:"C", ops:{A:"&lt;i&gt;", B:"&lt;u&gt;", C:"&lt;b&gt;", D:"&lt;p&gt;", E:"&lt;br&gt;"}},
+        {id:47, q:"Simbol selector ID di CSS...", a:"B", ops:{A:".", B:"#", C:"@", D:"$", E:"*"}},
+        {id:48, q:"Mengapa method='POST' lebih aman untuk form login dibanding 'GET'?", a:"C", ops:{A:"Lebih cepat", B:"GET tidak bisa teks", C:"Data tersembunyi (tidak di URL)", D:"GET untuk gambar", E:"POST tanpa internet"}},
+        {id:49, q:"Komentar HTML diawali diakhiri dengan...", a:"C", ops:{A:"//", B:"/* */", C:"&lt;!-- --&gt;", D:"&lt;# #&gt;", E:"{{ }}"}},
+        {id:50, q:"Menyisipkan CSS eksternal menggunakan tag...", a:"D", ops:{A:"&lt;style&gt;", B:"&lt;css&gt;", C:"&lt;script&gt;", D:"&lt;link&gt;", E:"&lt;import&gt;"}}
+    ];
+
+    // --- KONFIGURASI ---
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzev-A-tUgxXIGZpuKZ9OuJgbny-tRNWXKP_3CJMC5FZrxdtZ3aRimMZ5R3OiYZTpGyvA/exec'; // <--- GANTI INI
+    
+    let currentIdx = 0;
+    let answers = {}; // Menyimpan jawaban siswa {1:'A', 2:'C', ...}
+    let userName = "";
+    let userClass = "";
+
+    function startExam() {
+        userName = document.getElementById('nama').value;
+        userClass = document.getElementById('kelas').value;
+
+        if(!userName || !userClass) {
+            alert("Mohon isi Nama dan Kelas terlebih dahulu!");
+            return;
+        }
+
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('exam-section').style.display = 'block';
+        
+        renderNav();
+        loadQuestion(0);
+    }
+
+    function loadQuestion(index) {
+        currentIdx = index;
+        const q = questions[index];
+        const container = document.getElementById('question-container');
+        
+        // Cek jawaban tersimpan
+        const savedAns = answers[q.id] || "";
+
+        let optionsHTML = "";
+        ['A', 'B', 'C', 'D', 'E'].forEach(opt => {
+            const isChecked = savedAns === opt ? "checked" : "";
+            const isSelectedClass = savedAns === opt ? "selected" : "";
+            
+            optionsHTML += `
+                <label class="${isSelectedClass}" onclick="selectOption('${opt}')">
+                    <input type="radio" name="ans" value="${opt}" ${isChecked}>
+                    <span>${opt}. ${q.ops[opt]}</span>
+                </label>
+            `;
+        });
+
+        // Deteksi jika ada kode program di teks soal untuk formatting
+        let qText = q.q;
+        if(qText.includes("code") || qText.includes("cpp") || qText.includes("sql") || qText.includes("IF(")) {
+             // Basic formatting for code visual
+             qText = qText.replace(/\n/g, '<br>');
+        }
+
+        container.innerHTML = `
+            <div class="question-box">
+                <div style="margin-bottom:10px; color:#666;">Soal No. ${q.id}</div>
+                <div class="question-text">${qText}</div>
+                <div class="options">
+                    ${optionsHTML}
+                </div>
+            </div>
+        `;
+
+        // Update tombol navigasi
+        document.getElementById('prevBtn').disabled = index === 0;
+        document.getElementById('nextBtn').innerText = index === questions.length - 1 ? "Selesai" : "Selanjutnya";
+        
+        updateNavGrid();
+    }
+
+    function selectOption(opt) {
+        answers[questions[currentIdx].id] = opt;
+        
+        // Update visual pilihan
+        const labels = document.querySelectorAll('.options label');
+        labels.forEach(lbl => {
+            lbl.classList.remove('selected');
+            if(lbl.querySelector(`input[value="${opt}"]`)) {
+                lbl.classList.add('selected');
+                lbl.querySelector('input').checked = true;
+            }
+        });
+        updateNavGrid();
+    }
+
+    function changeQuestion(dir) {
+        const newIdx = currentIdx + dir;
+        if(newIdx >= 0 && newIdx < questions.length) {
+            loadQuestion(newIdx);
+        } else if (newIdx === questions.length) {
+            // Jika klik selanjutnya di soal terakhir, konfirmasi selesai
+            finishExam();
+        }
+    }
+
+    function renderNav() {
+        const grid = document.getElementById('nav-grid');
+        grid.innerHTML = "";
+        questions.forEach((q, idx) => {
+            const btn = document.createElement('div');
+            btn.className = 'nav-btn';
+            btn.innerText = q.id;
+            btn.id = `nav-${q.id}`;
+            btn.onclick = () => loadQuestion(idx);
+            grid.appendChild(btn);
+        });
+    }
+
+    function updateNavGrid() {
+        questions.forEach((q, idx) => {
+            const btn = document.getElementById(`nav-${q.id}`);
+            if(idx === currentIdx) {
+                btn.style.border = "2px solid #2563eb"; // Highlight current
+            } else {
+                btn.style.border = "1px solid #ccc";
+            }
+            
+            if(answers[q.id]) {
+                btn.classList.add('answered');
+            }
+        });
+    }
+
+    function finishExam() {
+        const answeredCount = Object.keys(answers).length;
+        if(answeredCount < questions.length) {
+            if(!confirm(`Anda baru menjawab ${answeredCount} dari ${questions.length} soal. Yakin ingin selesai?`)) {
+                return;
+            }
+        } else {
+            if(!confirm("Apakah Anda yakin ingin mengumpulkan jawaban?")) return;
+        }
+
+        calculateAndSubmit();
+    }
+
+    function calculateAndSubmit() {
+        document.getElementById('exam-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+
+        let correctCount = 0;
+        questions.forEach(q => {
+            if(answers[q.id] === q.a) {
+                correctCount++;
+            }
+        });
+
+        const finalScore = correctCount * 2; // 50 soal x 2 = 100
+        
+        document.getElementById('student-info').innerText = `${userName} - ${userClass}`;
+        document.getElementById('score-display').innerText = finalScore;
+
+        // Kirim ke Google Sheet
+        const formData = new FormData();
+        formData.append('Nama', userName);
+        formData.append('Kelas', userClass);
+        formData.append('Nilai', finalScore);
+
+        fetch(scriptURL, { method: 'POST', body: formData })
+            .then(response => {
+                document.getElementById('status-upload').innerText = "✅ Nilai berhasil disimpan!";
+                document.getElementById('status-upload').style.color = "green";
+            })
+            .catch(error => {
+                document.getElementById('status-upload').innerText = "⚠️ Nilai tampil di layar tapi gagal terkirim ke server. Silakan screenshot halaman ini.";
+                document.getElementById('status-upload').style.color = "red";
+                console.error('Error!', error.message);
+            });
+    }
+</script>
+
+</body>
+</html>
