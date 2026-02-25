@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remedial Informatika Kelas 12</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #d35400; /* Warna Orange/Merah Bata */
+            --primary-dark: #a84300;
+            --secondary: #e67e22;
+            --text-main: #2d3436;
+            --danger: #c0392b;
+            --warning: #f39c12;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Background Animasi Berwarna Hangat (Sunset Theme) */
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #f6d365, #fda085);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            user-select: none; /* Cegah copy paste */
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* TEMA GLASSMORPHISM (Efek Kaca) */
+        .container {
+            max-width: 850px; 
+            width: 100%; 
+            background: rgba(255, 255, 255, 0.85); /* Putih transparan */
+            backdrop-filter: blur(12px); /* Efek blur di belakang container */
+            -webkit-backdrop-filter: blur(12px);
+            padding: 40px;
+            border-radius: 24px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15); 
+            margin-top: 20px;
+            position: relative; 
+            overflow: hidden; 
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .container::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 8px;
+            background: linear-gradient(90deg, var(--danger), var(--warning));
+        }
+
+        h1, h2 { text-align: center; color: var(--text-main); font-weight: 700; }
+        
+        /* LOGIN STYLE */
+        #login-section { text-align: center; padding: 20px; }
+        .badge-strict { background: linear-gradient(135deg, var(--danger), #e74c3c); color: white; padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; display: inline-block; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(192, 57, 43, 0.3); }
+        .input-group { margin-bottom: 20px; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #4a4a4a; }
+        input[type="text"] { width: 100%; padding: 15px; border: 2px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.9); border-radius: 12px; font-size: 1rem; font-family: 'Poppins', sans-serif; box-sizing: border-box; transition: 0.3s; }
+        input[type="text"]:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(211, 84, 0, 0.15); background: #fff; }
+
+        /* BUTTONS */
+        .btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px 30px; border-radius: 12px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 15px rgba(211, 84, 0, 0.3); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(211, 84, 0, 0.4); }
+        .btn-nav-container { display: flex; justify-content: space-between; margin-top: 30px; }
+        .btn-submit { background: linear-gradient(135deg, #c0392b, #e74c3c); width: 100%; margin-top: 40px; box-shadow: 0 4px 15px rgba(192, 57, 43, 0.3); }
+
+        /* SOAL STYLE */
+        #exam-section { display: none; }
+        .question-text { font-size: 1.15rem; font-weight: 500; margin-bottom: 25px; line-height: 1.6; white-space: pre-wrap; color: #2d3436; }
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option-label { display: flex; align-items: center; padding: 15px 20px; background: rgba(255, 255, 255, 0.6); border-radius: 12px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .option-label:hover { background: rgba(255, 255, 255, 0.9); border-color: rgba(211, 84, 0, 0.2); }
+        .option-label input[type="radio"] { display: none; }
+        .circle-indicator { width: 20px; height: 20px; border: 2px solid #b2bec3; border-radius: 50%; margin-right: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #fff; }
+        .circle-indicator::after { content: ''; width: 10px; height: 10px; background: white; border-radius: 50%; transform: scale(0); transition: 0.2s; }
+        .option-label.selected { background: rgba(211, 84, 0, 0.1); border-color: var(--primary); color: var(--primary-dark); font-weight: 600; }
+        .option-label.selected .circle-indicator { background: var(--primary); border-color: var(--primary); }
+        .option-label.selected .circle-indicator::after { transform: scale(1); }
+
+        /* NAV GRID */
+        .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 10px; margin-top: 40px; padding-top: 30px; border-top: 2px dashed rgba(0,0,0,0.1); }
+        .nav-btn { width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 500; color: #636e72; }
+        .nav-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.1); box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3); }
+        .nav-btn.answered { background: #27ae60; color: white; border-color: #27ae60; }
+
+        #result-section { display: none; text-align: center; padding: 40px 0; }
+        pre { background: #2d3436; color: #dfe6e9; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 0.9em; border-left: 5px solid var(--primary); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); }
+
+        /* --- SISTEM ANTI CURANG STYLES --- */
+        .warning-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; justify-content: center; align-items: center; }
+        .warning-box { background: white; padding: 30px; border-radius: 20px; text-align: center; max-width: 450px; width: 80%; animation: popIn 0.3s ease; border-top: 8px solid var(--warning); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        
+        .block-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2c3e50; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; }
+        .timer-box { font-size: 4rem; font-weight: 700; font-family: 'Consolas', monospace; background: var(--danger); padding: 15px 40px; border-radius: 16px; margin: 20px 0; box-shadow: 0 0 40px rgba(192, 57, 43, 0.6); }
+        .reset-alert { background: rgba(255,0,0,0.2); border: 2px solid #ff7675; padding: 12px; border-radius: 12px; color: #ff7675; margin-top: 15px; display: none; font-weight: bold; animation: pulse 1s infinite; }
+
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+<div id="warning-modal" class="warning-modal">
+    <div class="warning-box">
+        <div style="font-size: 3.5rem; margin-bottom: 10px;">⚠️</div>
+        <h3 id="warning-title" style="margin-top: 0; color: #2d3436;">Peringatan Kecurangan!</h3>
+        <p id="warning-desc" style="color: #636e72;">Sistem mendeteksi Anda meninggalkan halaman ujian.</p>
+        <div style="background: rgba(192, 57, 43, 0.1); padding: 10px; border-radius: 8px; display: inline-block; margin: 10px 0;">
+            <p style="margin: 0; font-weight: bold; color: var(--danger); font-size: 1.2rem;">Pelanggaran: <span id="violation-count">0</span> / 2</p>
+        </div>
+        <br>
+        <button class="btn" style="background: #2d3436; margin-top: 15px; box-shadow: none;" onclick="closeWarning()">SAYA MENGERTI</button>
+    </div>
+</div>
+
+<div id="block-screen" class="block-screen">
+    <div style="font-size: 5rem; margin-bottom: 10px;">⛔</div>
+    <h1 style="color: #ff7675; margin-bottom: 5px; font-size: 2.5rem;">AKSES DIBLOKIR</h1>
+    <p style="font-size: 1.2rem;">Anda melanggar aturan dengan keluar dari halaman lebih dari 2 kali.</p>
+    
+    <div class="timer-box" id="block-timer">15:00</div>
+    
+    <p style="max-width: 600px; color: #bdc3c7; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px;"><strong>ATURAN KETAT:</strong> Jika Anda mencoba membuka tab lain atau me-minimize browser saat halaman ini aktif, timer akan otomatis mengulang kembali ke 15 menit penuh!</p>
+    
+    <div id="reset-alert" class="reset-alert">
+        🚨 TERDETEKSI KELUAR TAB! TIMER DI-RESET KEMBALI KE 15 MENIT! 🚨
+    </div>
+</div>
+
+<div class="container">
+    <div id="login-section">
+        <span class="badge-strict">🛡️ PENGAWASAN KETAT (ANTI-CHEAT AKTIF)</span>
+        <h2 style="color: var(--primary); margin-top: 10px; font-size: 2.2rem;">Remedial Informatika</h2>
+        <p style="color: #636e72; font-size: 1.1rem;">Kerjakan dengan jujur. Pelanggaran akan berakibat pemblokiran otomatis.</p>
+        <div style="margin-top: 40px;">
+            <div class="input-group">
+                <label>Nama Lengkap</label>
+                <input type="text" id="nama" placeholder="Ketik nama anda..." required>
+            </div>
+            <div class="input-group">
+                <label>Kelas</label>
+                <input type="text" id="kelas" placeholder="Contoh: 12 IPA 1" required>
+            </div>
+        </div>
+        <button class="btn" onclick="startExam()" style="margin-top: 10px; font-size: 1.1rem;">Mulai Ujian Remedial</button>
+    </div>
+
+    <div id="exam-section">
+        <div id="question-container"></div>
+        <div class="btn-nav-container">
+            <button class="btn" id="prevBtn" onclick="changeQuestion(-1)" style="background: rgba(0,0,0,0.1); color: #2d3436; box-shadow: none;">Kembali</button>
+            <button class="btn" id="nextBtn" onclick="changeQuestion(1)">Selanjutnya</button>
+        </div>
+        <div class="nav-grid" id="nav-grid"></div>
+        <button class="btn btn-submit" onclick="finishExam()">Selesai & Kirim Jawaban</button>
+    </div>
+
+    <div id="result-section">
+        <h2 style="font-size: 2rem; color: var(--primary);">Hasil Remedial</h2>
+        <p id="student-info" style="font-size: 1.2rem; color: #2d3436; font-weight: 600;"></p>
+        <div style="width: 160px; height: 160px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 4em; font-weight: 700; margin: 30px auto; box-shadow: 0 10px 30px rgba(211, 84, 0, 0.4);" id="score-display">0</div>
+        <p id="status-upload" style="font-weight: 500; font-size: 1.1rem; padding: 10px; border-radius: 8px; display: inline-block;">Mengirim data ke server...</p>
+    </div>
+</div>
+
+<script>
+    // --- DATABASE SOAL REMEDIAL ---
+    const questions = [
+        {id:1, q:"Kinerja komputer terasa sangat lambat saat membuka banyak aplikasi, namun indikator CPU usage rendah. Komponen keras (hardware) mana yang paling mungkin menjadi 'bottleneck'?", a:"D", ops:{A:"Processor", B:"VGA Card", C:"Power Supply", D:"RAM (Random Access Memory)", E:"Sound Card"}},
+        {id:2, q:"Dalam siklus pemrosesan informasi (Input-Process-Output-Storage), proses kompresi sebuah file video berukuran besar agar ukurannya mengecil terjadi pada fase...", a:"B", ops:{A:"Input", B:"Process", C:"Output", D:"Storage", E:"Distribution"}},
+        {id:3, q:"(Ms. Excel) Rumus yang paling tepat digunakan untuk mencari nilai huruf (A, B, atau C) berdasarkan rentang nilai angka tertentu di dalam sebuah tabel referensi yang tersusun vertikal adalah...", a:"C", ops:{A:"HLOOKUP", B:"MATCH", C:"VLOOKUP", D:"COUNTIF", E:"IFERROR"}},
+        {id:4, q:"Pada fitur Mail Merge di Ms. Word, saat Anda ingin memunculkan nama penerima secara spesifik dari file Excel, Anda harus menyisipkan elemen yang disebut...", a:"B", ops:{A:"Data Source", B:"Merge Field", C:"Macro", D:"Bookmark", E:"Hyperlink"}},
+        {id:5, q:"Karakteristik utama yang membedakan sistem operasi Linux dengan Windows dalam ekosistem pengembangan perangkat lunak adalah sifatnya yang...", a:"B", ops:{A:"Hanya berbasis teks (CLI)", B:"Open-source dan bebas dimodifikasi", C:"Kebal terhadap segala jenis virus", D:"Tidak membutuhkan media penyimpanan", E:"Dikembangkan oleh Apple Inc."}},
+        {id:6, q:"Untuk mempresentasikan siklus sistem komputer kepada siswa, animasi Ms. PowerPoint yang paling cocok agar diagram muncul satu-per-satu berurutan adalah...", a:"A", ops:{A:"Animation > Entrance > Appear/Fade", B:"Transition > Morph", C:"Animation > Exit > Disappear", D:"Design > Format Background", E:"Slide Show > Rehearse Timings"}},
+        {id:7, q:"Jika sebuah sekolah mengimplementasikan jaringan LAN dengan topologi Star, apa risiko terbesar (Single Point of Failure) dari desain ini?", a:"C", ops:{A:"Kabel mudah terputus", B:"Konfigurasi IP sulit dilakukan", C:"Jika Switch/Hub pusat mati, seluruh jaringan lumpuh", D:"Kecepatan internet dibagi rata", E:"Rentan terkena serangan hacker dari luar"}},
+        {id:8, q:"Dalam standar jaringan IEEE 802.3, kecepatan maksimal teoritis yang dapat dilewati oleh kabel UTP kategori 5e (Cat5e) adalah...", a:"D", ops:{A:"10 Mbps", B:"100 Mbps", C:"500 Mbps", D:"1 Gbps (1000 Mbps)", E:"10 Gbps"}},
+        {id:9, q:"Jika sebuah jaringan LAN memiliki Subnet Mask 255.255.255.192 (/26), berapa jumlah IP Address valid (host) yang dapat digunakan oleh perangkat PC dalam satu segmen?", a:"B", ops:{A:"30 host", B:"62 host", C:"64 host", D:"126 host", E:"254 host"}},
+        {id:10, q:"Pada model referensi OSI 7 Layer, perangkat Router beroperasi pada layer ke...", a:"C", ops:{A:"Layer 1 (Physical)", B:"Layer 2 (Data Link)", C:"Layer 3 (Network)", D:"Layer 4 (Transport)", E:"Layer 7 (Application)"}},
+        {id:11, q:"Proses pemberian alamat IP secara dinamis dari Server ke Client melewati 4 tahapan komunikasi yang dikenal dengan DORA. 'D' pada DORA merupakan singkatan dari...", a:"A", ops:{A:"Discover", B:"Domain", C:"Dynamic", D:"Data", E:"Delivery"}},
+        {id:12, q:"Anda menghubungkan dua buah PC secara langsung menggunakan kabel Cross-Over. PC A ber-IP 192.168.1.10/24 dan PC B ber-IP 192.168.2.10/24. Hasil 'ping' dari PC A ke PC B akan...", a:"C", ops:{A:"Reply karena menggunakan kabel cross-over", B:"Reply jika firewall dimatikan", C:"Request Time Out karena berbeda segmen network", D:"Destination Host Unreachable karena MAC Address sama", E:"Error pada layer physical"}},
+        {id:13, q:"Pada Cisco Packet Tracer, saat simulasi pengiriman paket ICMP (Ping) gagal karena Router belum mengetahui rute jaringan tujuan, pesan error yang tercatat pada PDU biasanya adalah...", a:"B", ops:{A:"Port Mismatch", B:"Routing Table is empty / No Route", C:"Wrong IP Address Class", D:"Cable Unplugged", E:"Protocol Not Supported"}},
+        {id:14, q:"Di Cisco IOS CLI, perintah 'show running-config' dijalankan pada mode...", a:"B", ops:{A:"User EXEC (>)", B:"Privileged EXEC (#)", C:"Global Configuration (config#)", D:"Interface Configuration (config-if#)", E:"ROMMON"}},
+        {id:15, q:"Dalam menganalisa traffic jaringan di Packet Tracer mode Simulation, warna amplop PDU hijau terang (ICMP) tiba-tiba berubah warna dan dibatalkan (dropped) pada layer 2. Hal ini biasanya terkait dengan...", a:"D", ops:{A:"IP tidak valid", B:"Port ditutup", C:"Kesalahan ketik perintah ping", D:"Proses ARP Request yang belum selesai", E:"Kabel putus"}},
+        {id:16, q:"Sebuah PC di Packet Tracer tidak bisa membuka website sekolah.com. Saat di-ping IP Servernya bisa (Reply), tapi di-ping domain sekolah.com gagal. Konfigurasi apa yang salah pada PC klien tersebut?", a:"D", ops:{A:"IP Address salah segmen", B:"Subnet Mask salah", C:"Default Gateway kosong", D:"DNS Server belum diisi/salah", E:"Kabel jaringan terbalik"}},
+        {id:17, q:"Perangkat yang secara cerdas mencatat MAC Address dari setiap PC yang terhubung di port-nya untuk mengurangi *collision* (tabrakan data) dalam simulasi jaringan adalah...", a:"B", ops:{A:"Hub", B:"Switch", C:"Repeater", D:"Access Point", E:"Modem"}},
+        {id:18, q:"Fungsi utama dari pengaturan 'Default Gateway' pada komputer klien adalah...", a:"C", ops:{A:"Memberikan alamat IP otomatis", B:"Menerjemahkan nama domain menjadi IP", C:"Pintu keluar untuk mengirim paket data ke jaringan luar/internet", D:"Membagi bandwidth internet", E:"Menyimpan cache website"}},
+        {id:19, q:"Perhatikan kode C++ berikut:\nint a = 5, b = 2;\nfloat c = a / b;\nBerapakah nilai variabel 'c' yang tersimpan di memori?", a:"A", ops:{A:"2.0", B:"2.5", C:"2", D:"3", E:"Error tipe data"}},
+        {id:20, q:"Bentuk penulisan percabangan bersarang (Nested If) yang menguji nilai secara sekuensial pada C++ biasanya diimplementasikan dengan sintaks...", a:"C", ops:{A:"if - for", B:"switch - break", C:"else if", D:"do - while", E:"try - catch"}},
+        {id:21, q:"Perhatikan algoritma perulangan berikut:\nfor(int i=1; i<=3; i++) {\n  for(int j=1; j<=2; j++) {\n    cout << \"*\";\n  }\n}\nBerapa jumlah bintang (*) yang akan tercetak?", a:"B", ops:{A:"5", B:"6", C:"9", D:"3", E:"2"}},
+        {id:22, q:"Dalam C++, jika sebuah variabel dideklarasikan di dalam blok fungsi 'void tampil()', maka variabel tersebut bersifat...", a:"C", ops:{A:"Global (bisa diakses di semua fungsi)", B:"Statis", C:"Lokal (hanya dikenali di dalam fungsi tersebut)", D:"Konstan (tidak bisa diubah)", E:"Dinamis"}},
+        {id:23, q:"Operator *Increment* (++x) dan *Decrement* (--x) dalam bahasa pemrograman C++ berfungsi untuk...", a:"D", ops:{A:"Mengalikan dan membagi nilai variabel dengan 2", B:"Mengecek apakah nilai variabel positif atau negatif", C:"Menambahkan atau mengurangi nilai variabel dengan bilangan acak", D:"Menaikkan atau menurunkan nilai variabel sebesar 1", E:"Membalikkan tipe data variabel"}},
+        {id:24, q:"Sebuah array dideklarasikan dengan 'int nilai[5] = {80, 90, 75, 85, 100};'. Untuk memanggil nilai 85, indeks array yang diakses adalah...", a:"D", ops:{A:"nilai[4]", B:"nilai[1]", C:"nilai[2]", D:"nilai[3]", E:"nilai[5]"}},
+        {id:25, q:"Dalam SQL, fungsi agregasi yang digunakan untuk menghitung total jumlah baris data yang memiliki nilai tertentu dalam suatu kolom adalah...", a:"D", ops:{A:"SUM()", B:"MAX()", C:"AVERAGE()", D:"COUNT()", E:"TOTAL()"}},
+        {id:26, q:"Perhatikan kueri berikut:\nSELECT kelas, COUNT(*) FROM siswa GROUP BY kelas HAVING COUNT(*) > 30;\nMaksud dari klausa HAVING pada kueri tersebut adalah...", a:"B", ops:{A:"Mengurutkan siswa berdasarkan kelas", B:"Memfilter hasil pengelompokan yang jumlah siswanya lebih dari 30", C:"Menggantikan klausa WHERE untuk tipe angka", D:"Mengalikan jumlah siswa dengan 30", E:"Menghapus data kelas yang siswanya di atas 30"}},
+        {id:27, q:"Jika Tabel 'Buku' di-LEFT JOIN dengan Tabel 'Peminjaman', apa yang terjadi pada record buku yang belum pernah dipinjam?", a:"A", ops:{A:"Tetap ditampilkan, dengan data kolom peminjaman berisi NULL", B:"Tidak ditampilkan sama sekali", C:"Menyebabkan error sintaks", D:"Data buku otomatis terhapus", E:"Ditampilkan di baris paling bawah secara acak"}},
+        {id:28, q:"Perbedaan mendasar antara perintah DROP TABLE dan TRUNCATE TABLE dalam SQL adalah...", a:"C", ops:{A:"DROP hanya menghapus data, TRUNCATE menghapus tabel", B:"DROP bersifat sementara, TRUNCATE bersifat permanen", C:"DROP menghapus tabel beserta strukturnya, TRUNCATE hanya mengosongkan seluruh datanya", D:"DROP digunakan pada DML, TRUNCATE digunakan pada DDL", E:"Tidak ada perbedaan, fungsinya sama"}},
+        {id:29, q:"Sebuah subquery dalam SQL biasanya diletakkan di dalam klausa...", a:"E", ops:{A:"Hanya di SELECT", B:"Hanya di FROM", C:"Hanya di GROUP BY", D:"Hanya di ORDER BY", E:"WHERE, FROM, atau SELECT"}},
+        {id:30, q:"Kueri untuk mengubah struktur tabel (misal: menambah kolom baru 'alamat' tipe VARCHAR) adalah...", a:"B", ops:{A:"UPDATE TABLE siswa SET kolom = 'alamat';", B:"ALTER TABLE siswa ADD alamat VARCHAR(100);", C:"MODIFY TABLE siswa INSERT alamat VARCHAR;", D:"CHANGE TABLE siswa COLUMN alamat;", E:"CREATE COLUMN alamat IN siswa;"}},
+        {id:31, q:"Konsep RDBMS yang memastikan sebuah nilai di kolom tabel Anak harus ada di kolom rujukan tabel Induk dikenal dengan istilah...", a:"B", ops:{A:"Data Redundancy", B:"Referential Integrity", C:"Database Normalization", D:"Query Optimization", E:"Transaction Rollback"}},
+        {id:32, q:"Mikrokontroler ESP32 memiliki arsitektur yang lebih canggih dibanding Arduino Uno standar, salah satunya adalah memiliki fitur bawaan berupa...", a:"C", ops:{A:"Layar LCD Touchscreen", B:"Sistem Operasi Windows Embedded", C:"Modul Bluetooth dan Wi-Fi Dual-Core", D:"Port HDMI untuk display", E:"Penyimpanan Harddisk internal"}},
+        {id:33, q:"Pin Analog pada papan mikrokontroler umumnya memiliki fitur ADC (Analog to Digital Converter) 10-bit. Artinya, rentang nilai digital yang dihasilkan adalah...", a:"B", ops:{A:"0 hingga 10", B:"0 hingga 1023", C:"0 hingga 255", D:"1 hingga 100", E:"0 hingga 1000"}},
+        {id:34, q:"Dalam pemrograman mikrokontroler, masalah 'Bouncing' saat menekan tombol fisik (hardware) diatasi dengan teknik...", a:"A", ops:{A:"Debouncing (menambahkan jeda waktu/delay mikro)", B:"Menurunkan tegangan input", C:"Menambah perintah analogWrite", D:"Mengganti kabel jumper", E:"Menggunakan tipe data float"}},
+        {id:35, q:"Instruksi 'pinMode(LED_BUILTIN, OUTPUT);' dalam Arduino IDE berfungsi untuk...", a:"D", ops:{A:"Menyimpan nilai sensor cahaya", B:"Menyalakan lampu LED", C:"Mematikan lampu LED", D:"Mendefinisikan fungsi pin sebagai penghasil tegangan (keluaran)", E:"Menerima sinyal dari luar sirkuit"}},
+        {id:36, q:"Untuk membaca status logika dari sebuah sensor gerak (PIR) yang memberikan nilai High (1) atau Low (0), fungsi yang digunakan adalah...", a:"C", ops:{A:"analogRead()", B:"analogWrite()", C:"digitalRead()", D:"digitalWrite()", E:"pulseIn()"}},
+        {id:37, q:"Perangkat IoT sering menggunakan protokol komunikasi ringan khusus mesin (M2M) dengan arsitektur publish/subscribe. Protokol ini disebut...", a:"C", ops:{A:"HTTP", B:"FTP", C:"MQTT", D:"SMTP", E:"VoIP"}},
+        {id:38, q:"Dalam struktur direktori web (Relative Path), untuk menautkan gambar yang berada satu folder di 'atas' dari folder file HTML saat ini, kita menuliskan src=\"...", a:"D", ops:{A:"/gambar.jpg\"", B:"./gambar.jpg\"", C:"gambar.jpg\"", D:"../gambar.jpg\"", E:"//gambar.jpg\""}},
+        {id:39, q:"Tag HTML5 yang secara semantik dianjurkan untuk membungkus konten navigasi menu website adalah...", a:"C", ops:{A:"<menu>", B:"<navbar>", C:"<nav>", D:"<header>", E:"<aside>"}},
+        {id:40, q:"Atribut 'alt' pada tag <img> sangat penting dalam web modern karena berfungsi untuk...", a:"E", ops:{A:"Mengubah resolusi gambar", B:"Memberi bingkai pada gambar", C:"Menambahkan tautan pada gambar", D:"Menentukan letak gambar", E:"Aksesibilitas (Screen Reader) dan alternatif jika gambar gagal dimuat"}},
+        {id:41, q:"CSS Box Model mendefinisikan ruang di sekitar konten. Urutan dari posisi paling dalam (dekat teks) hingga paling luar adalah...", a:"B", ops:{A:"Content - Margin - Border - Padding", B:"Content - Padding - Border - Margin", C:"Content - Border - Padding - Margin", D:"Padding - Content - Border - Margin", E:"Margin - Padding - Border - Content"}},
+        {id:42, q:"Properti CSS 'position: absolute;' akan membuat elemen...", a:"A", ops:{A:"Diposisikan relatif terhadap container induk pertamanya yang berposisi relative/absolute", B:"Mengikuti gulir layar (scroll)", C:"Terpusat otomatis di tengah layar", D:"Diposisikan sesuai aliran dokumen normal", E:"Menghilang dari layar"}},
+        {id:43, q:"Pada Form HTML, elemen `<input type=\"password\">` akan membuat masukan teks pengguna...", a:"D", ops:{A:"Ter-enkripsi langsung ke server", B:"Tidak dapat dihapus", C:"Hanya menerima kombinasi angka", D:"Disamarkan menjadi karakter titik atau bintang", E:"Disimpan secara permanen di browser"}},
+        {id:44, q:"Untuk membuat tata letak dua kolom berdampingan yang fleksibel, teknologi CSS modern yang paling efisien digunakan adalah...", a:"C", ops:{A:"Float", B:"Tables", C:"Flexbox atau CSS Grid", D:"Inline-block", E:"Positioning"}},
+        {id:45, q:"Jika spesifisitas CSS berbenturan: Selector ID bernilai 100, Class bernilai 10, dan Element Tag bernilai 1. Berapakah 'nilai' spesifisitas dari selector: `div#header .menu li`?", a:"A", ops:{A:"112 (1 ID, 1 Class, 2 Element)", B:"12", C:"102", D:"110", E:"120"}},
+        {id:46, q:"Karakter khusus HTML Entity untuk menampilkan simbol lebih kecil (<) di layar tanpa terdeteksi sebagai tag adalah...", a:"B", ops:{A:"&copy;", B:"&lt;", C:"&gt;", D:"&amp;", E:"&quot;"}},
+        {id:47, q:"Media Queries pada CSS (@media) adalah teknik utama yang digunakan untuk merealisasikan...", a:"C", ops:{A:"Animasi transisi 3D", B:"Pemutaran video HTML5", C:"Desain web responsif (Responsive Web Design)", D:"Pengambilan data dari Database", E:"Penyisipan file audio"}},
+        {id:48, q:"Atribut HTML yang digunakan agar sebuah link (tautan) terbuka di tab atau jendela browser baru adalah...", a:"C", ops:{A:"target=\"_self\"", B:"target=\"_parent\"", C:"target=\"_blank\"", D:"open=\"new\"", E:"window=\"blank\""}},
+        {id:49, q:"CSS: Apa hasil dari aturan `p { font-weight: 700; }` pada dokumen web?", a:"A", ops:{A:"Seluruh teks dalam paragraf dicetak tebal", B:"Teks paragraf berukuran 700 pixel", C:"Ketebalan garis pinggir (border) paragraf menjadi 700 unit", D:"Teks paragraf dimiringkan", E:"Spasi antar huruf diperbesar"}},
+        {id:50, q:"Teknologi CSS yang membuat perpindahan state (misalnya perubahan warna tombol saat di-hover) terjadi secara halus dalam durasi tertentu disebut...", a:"D", ops:{A:"Transformation", B:"Keyframes", C:"Filter", D:"Transition", E:"Opacity"}}
+    ];
+
+    // --- CONFIG ---
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzev-A-tUgxXIGZpuKZ9OuJgbny-tRNWXKP_3CJMC5FZrxdtZ3aRimMZ5R3OiYZTpGyvA/exec';  // GANTI INI
+    const PENALTY_MINUTES = 15;
+
+    // --- VARIABLES ---
+    let currentIdx = 0;
+    let answers = {};
+    let userName = "";
+    let userClass = "";
+    let isExamStarted = false;
+
+    let violations = parseInt(localStorage.getItem('remViolations') || "0");
+    let lockEndTime = parseInt(localStorage.getItem('remLockUntil') || "0");
+
+    // --- LOGIKA ANTI CURANG ---
+    document.addEventListener("DOMContentLoaded", () => {
+        checkLockStatus();
+    });
+
+    document.addEventListener("visibilitychange", () => {
+        if (isExamStarted && document.hidden) {
+            handleTabSwitch();
+        }
+    });
+
+    window.addEventListener("blur", () => {
+        if (isExamStarted && document.visibilityState !== 'hidden') {
+            handleTabSwitch();
+        }
+    });
+
+    function handleTabSwitch() {
+        if (lockEndTime > Date.now()) {
+            lockEndTime = Date.now() + (PENALTY_MINUTES * 60000);
+            localStorage.setItem('remLockUntil', lockEndTime);
+            
+            const resetAlert = document.getElementById('reset-alert');
+            resetAlert.style.display = 'block';
+            
+            const blockScreen = document.getElementById('block-screen');
+            blockScreen.style.animation = 'none';
+            setTimeout(() => blockScreen.style.animation = 'popIn 0.3s ease', 10);
+            
+        } else if (lockEndTime === 0 || lockEndTime < Date.now()) {
+            violations++;
+            localStorage.setItem('remViolations', violations);
+
+            if (violations === 1) {
+                showWarning("Peringatan Pertama!", "Anda dilarang membuka tab/aplikasi lain. Jika diulangi, Anda akan diblokir.");
+            } else if (violations === 2) {
+                showWarning("Peringatan Terakhir!", "Ini peringatan terakhir. 1 kali pelanggaran lagi, ujian Anda akan otomatis diblokir selama 15 menit.");
+            } else {
+                lockEndTime = Date.now() + (PENALTY_MINUTES * 60000);
+                localStorage.setItem('remLockUntil', lockEndTime);
+                showBlockScreen();
+            }
+        }
+    }
+
+    function showWarning(title, desc) {
+        document.getElementById('warning-title').innerText = title;
+        document.getElementById('warning-desc').innerText = desc;
+        document.getElementById('violation-count').innerText = violations;
+        document.getElementById('warning-modal').style.display = 'flex';
+    }
+
+    function closeWarning() {
+        document.getElementById('warning-modal').style.display = 'none';
+    }
+
+    function checkLockStatus() {
+        if (lockEndTime > Date.now()) {
+            showBlockScreen();
+        } else if (lockEndTime !== 0 && lockEndTime < Date.now()) {
+            localStorage.removeItem('remLockUntil');
+            localStorage.removeItem('remViolations');
+            violations = 0;
+            lockEndTime = 0;
+        }
+    }
+
+    function showBlockScreen() {
+        const screen = document.getElementById('block-screen');
+        const timerDisplay = document.getElementById('block-timer');
+        screen.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+
+        const interval = setInterval(() => {
+            const now = Date.now();
+            const distance = lockEndTime - now;
+
+            if (distance <= 0) {
+                clearInterval(interval);
+                alert("Waktu hukuman selesai! Halaman akan dimuat ulang. Kerjakan dengan jujur.");
+                localStorage.removeItem('remLockUntil');
+                localStorage.removeItem('remViolations');
+                window.location.reload();
+                return;
+            }
+
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+            timerDisplay.innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+        }, 1000);
+    }
+
+    // --- LOGIKA UJIAN ---
+    function startExam() {
+        userName = document.getElementById('nama').value;
+        userClass = document.getElementById('kelas').value;
+
+        if(!userName || !userClass) {
+            alert("Isi Nama dan Kelas!"); return;
+        }
+
+        isExamStarted = true;
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('exam-section').style.display = 'block';
+        
+        renderNav();
+        loadQuestion(0);
+        
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch((e) => console.log(e));
+        }
+    }
+
+    function loadQuestion(index) {
+        currentIdx = index;
+        const q = questions[index];
+        const container = document.getElementById('question-container');
+        const savedAns = answers[q.id] || "";
+
+        let optionsHTML = "";
+        ['A', 'B', 'C', 'D', 'E'].forEach(opt => {
+            const isSelected = savedAns === opt ? "selected" : "";
+            optionsHTML += `
+                <label class="option-label ${isSelected}" onclick="selectOption('${opt}')">
+                    <div class="circle-indicator"></div>
+                    <input type="radio" name="ans" value="${opt}">
+                    <span>${q.ops[opt]}</span>
+                </label>
+            `;
+        });
+
+        let qText = q.q;
+        if(qText.includes("int ") || qText.includes("SELECT ") || qText.includes("for(") || qText.includes("<div")) {
+             qText = `<pre>${qText}</pre>`;
+        }
+
+        container.innerHTML = `
+            <div style="margin-bottom:15px; color:#e67e22; font-weight:700; text-transform:uppercase; font-size: 0.9rem; letter-spacing: 1px;">Soal Remedial No. ${q.id}</div>
+            <div class="question-text">${qText}</div>
+            <div class="options">${optionsHTML}</div>
+        `;
+
+        document.getElementById('prevBtn').disabled = index === 0;
+        document.getElementById('nextBtn').innerText = index === questions.length - 1 ? "Selesai" : "Selanjutnya";
+        updateNavGrid();
+    }
+
+    function selectOption(opt) {
+        answers[questions[currentIdx].id] = opt;
+        const labels = document.querySelectorAll('.option-label');
+        labels.forEach(lbl => {
+            lbl.classList.remove('selected');
+            if(lbl.querySelector(`input[value="${opt}"]`)) lbl.classList.add('selected');
+        });
+        updateNavGrid();
+    }
+
+    function changeQuestion(dir) {
+        const newIdx = currentIdx + dir;
+        if(newIdx >= 0 && newIdx < questions.length) loadQuestion(newIdx);
+        else if (newIdx === questions.length) finishExam();
+    }
+
+    function renderNav() {
+        const grid = document.getElementById('nav-grid');
+        grid.innerHTML = "";
+        questions.forEach((q, idx) => {
+            const btn = document.createElement('div');
+            btn.className = 'nav-btn'; btn.innerText = q.id; btn.id = `nav-${q.id}`;
+            btn.onclick = () => loadQuestion(idx);
+            grid.appendChild(btn);
+        });
+    }
+
+    function updateNavGrid() {
+        questions.forEach((q, idx) => {
+            const btn = document.getElementById(`nav-${q.id}`);
+            if(idx === currentIdx) btn.classList.add('active');
+            else btn.classList.remove('active');
+            if(answers[q.id]) btn.classList.add('answered');
+        });
+    }
+
+    function finishExam() {
+        const answeredCount = Object.keys(answers).length;
+        if(answeredCount < questions.length) {
+            if(!confirm(`Belum selesai! Anda baru menjawab ${answeredCount} dari ${questions.length} soal. Tetap kumpulkan?`)) return;
+        } else {
+            if(!confirm("Yakin ingin mengirim jawaban?")) return;
+        }
+        
+        isExamStarted = false;
+        calculateAndSubmit();
+    }
+
+    function calculateAndSubmit() {
+        document.getElementById('exam-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+
+        let correctCount = 0;
+        questions.forEach(q => { if(answers[q.id] === q.a) correctCount++; });
+
+        const finalScore = correctCount * 2;
+        document.getElementById('student-info').innerText = `${userName} - ${userClass}`;
+        document.getElementById('score-display').innerText = finalScore;
+
+        const formData = new FormData();
+        formData.append('Nama', userName + " (Remedial)");
+        formData.append('Kelas', userClass);
+        formData.append('Nilai', finalScore);
+
+        fetch(scriptURL, { method: 'POST', body: formData })
+            .then(response => {
+                const statusEl = document.getElementById('status-upload');
+                statusEl.innerText = "✅ Nilai Remedial berhasil disimpan!";
+                statusEl.style.background = "rgba(39, 174, 96, 0.1)";
+                statusEl.style.color = "#27ae60";
+                localStorage.removeItem('remViolations');
+            })
+            .catch(error => {
+                const statusEl = document.getElementById('status-upload');
+                statusEl.innerText = "⚠️ Server Gagal! Segera screenshot halaman ini.";
+                statusEl.style.background = "rgba(192, 57, 43, 0.1)";
+                statusEl.style.color = "#c0392b";
+            });
+    }
+</script>
+
+</body>
+</html>
