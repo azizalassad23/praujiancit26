@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #d35400; /* Warna Orange/Merah Bata */
+            --primary: #d35400;
             --primary-dark: #a84300;
             --secondary: #e67e22;
             --text-main: #2d3436;
@@ -17,7 +17,6 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            /* Background Animasi Berwarna Hangat (Sunset Theme) */
             background: linear-gradient(-45deg, #ff9a9e, #fecfef, #f6d365, #fda085);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -28,7 +27,12 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            user-select: none; /* Cegah copy paste */
+            
+            /* ANTI COPY-PASTE */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         @keyframes gradientBG {
@@ -37,12 +41,11 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* TEMA GLASSMORPHISM (Efek Kaca) */
         .container {
             max-width: 850px; 
             width: 100%; 
-            background: rgba(255, 255, 255, 0.85); /* Putih transparan */
-            backdrop-filter: blur(12px); /* Efek blur di belakang container */
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px);
             padding: 40px;
             border-radius: 24px; 
@@ -60,7 +63,6 @@
 
         h1, h2 { text-align: center; color: var(--text-main); font-weight: 700; }
         
-        /* LOGIN STYLE */
         #login-section { text-align: center; padding: 20px; }
         .badge-strict { background: linear-gradient(135deg, var(--danger), #e74c3c); color: white; padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; display: inline-block; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(192, 57, 43, 0.3); }
         .input-group { margin-bottom: 20px; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto; }
@@ -68,13 +70,11 @@
         input[type="text"] { width: 100%; padding: 15px; border: 2px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.9); border-radius: 12px; font-size: 1rem; font-family: 'Poppins', sans-serif; box-sizing: border-box; transition: 0.3s; }
         input[type="text"]:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(211, 84, 0, 0.15); background: #fff; }
 
-        /* BUTTONS */
         .btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 15px 30px; border-radius: 12px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 15px rgba(211, 84, 0, 0.3); }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(211, 84, 0, 0.4); }
         .btn-nav-container { display: flex; justify-content: space-between; margin-top: 30px; }
         .btn-submit { background: linear-gradient(135deg, #c0392b, #e74c3c); width: 100%; margin-top: 40px; box-shadow: 0 4px 15px rgba(192, 57, 43, 0.3); }
 
-        /* SOAL STYLE */
         #exam-section { display: none; }
         .question-text { font-size: 1.15rem; font-weight: 500; margin-bottom: 25px; line-height: 1.6; white-space: pre-wrap; color: #2d3436; }
         .options { display: flex; flex-direction: column; gap: 12px; }
@@ -87,7 +87,6 @@
         .option-label.selected .circle-indicator { background: var(--primary); border-color: var(--primary); }
         .option-label.selected .circle-indicator::after { transform: scale(1); }
 
-        /* NAV GRID */
         .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 10px; margin-top: 40px; padding-top: 30px; border-top: 2px dashed rgba(0,0,0,0.1); }
         .nav-btn { width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 500; color: #636e72; }
         .nav-btn:hover { border-color: var(--primary); color: var(--primary); }
@@ -97,7 +96,6 @@
         #result-section { display: none; text-align: center; padding: 40px 0; }
         pre { background: #2d3436; color: #dfe6e9; padding: 15px; border-radius: 12px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 0.9em; border-left: 5px solid var(--primary); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); }
 
-        /* --- SISTEM ANTI CURANG STYLES --- */
         .warning-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; justify-content: center; align-items: center; }
         .warning-box { background: white; padding: 30px; border-radius: 20px; text-align: center; max-width: 450px; width: 80%; animation: popIn 0.3s ease; border-top: 8px solid var(--warning); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
         
@@ -170,68 +168,82 @@
         <h2 style="font-size: 2rem; color: var(--primary);">Hasil Remedial</h2>
         <p id="student-info" style="font-size: 1.2rem; color: #2d3436; font-weight: 600;"></p>
         <div style="width: 160px; height: 160px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 4em; font-weight: 700; margin: 30px auto; box-shadow: 0 10px 30px rgba(211, 84, 0, 0.4);" id="score-display">0</div>
-        <p id="status-upload" style="font-weight: 500; font-size: 1.1rem; padding: 10px; border-radius: 8px; display: inline-block;">Mengirim data ke server...</p>
+        <p id="status-upload" style="font-weight: 500; font-size: 1.1rem; padding: 10px; border-radius: 8px; display: inline-block;">Menyiapkan pengiriman data...</p>
     </div>
 </div>
 
 <script>
-    // --- DATABASE SOAL REMEDIAL ---
+    // --- ANTI VIEW SOURCE & INSPECT ELEMENT ---
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.onkeydown = function(e) {
+        if(e.keyCode == 123) return false; // Blokir F12
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 73) return false; // Blokir Ctrl+Shift+I
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 74) return false; // Blokir Ctrl+Shift+J
+        if(e.ctrlKey && e.keyCode == 85) return false; // Blokir Ctrl+U
+    };
+
+    // --- DATABASE SOAL (TAG HTML SUDAH DI-ESCAPE & KUNCI DI-ENKRIPSI) ---
+    // A: X7 | B: Y8 | C: Z9 | D: W6 | E: V5
     const questions = [
-        {id:1, q:"Kinerja komputer terasa sangat lambat saat membuka banyak aplikasi, namun indikator CPU usage rendah. Komponen keras (hardware) mana yang paling mungkin menjadi 'bottleneck'?", a:"D", ops:{A:"Processor", B:"VGA Card", C:"Power Supply", D:"RAM (Random Access Memory)", E:"Sound Card"}},
-        {id:2, q:"Dalam siklus pemrosesan informasi (Input-Process-Output-Storage), proses kompresi sebuah file video berukuran besar agar ukurannya mengecil terjadi pada fase...", a:"B", ops:{A:"Input", B:"Process", C:"Output", D:"Storage", E:"Distribution"}},
-        {id:3, q:"(Ms. Excel) Rumus yang paling tepat digunakan untuk mencari nilai huruf (A, B, atau C) berdasarkan rentang nilai angka tertentu di dalam sebuah tabel referensi yang tersusun vertikal adalah...", a:"C", ops:{A:"HLOOKUP", B:"MATCH", C:"VLOOKUP", D:"COUNTIF", E:"IFERROR"}},
-        {id:4, q:"Pada fitur Mail Merge di Ms. Word, saat Anda ingin memunculkan nama penerima secara spesifik dari file Excel, Anda harus menyisipkan elemen yang disebut...", a:"B", ops:{A:"Data Source", B:"Merge Field", C:"Macro", D:"Bookmark", E:"Hyperlink"}},
-        {id:5, q:"Karakteristik utama yang membedakan sistem operasi Linux dengan Windows dalam ekosistem pengembangan perangkat lunak adalah sifatnya yang...", a:"B", ops:{A:"Hanya berbasis teks (CLI)", B:"Open-source dan bebas dimodifikasi", C:"Kebal terhadap segala jenis virus", D:"Tidak membutuhkan media penyimpanan", E:"Dikembangkan oleh Apple Inc."}},
-        {id:6, q:"Untuk mempresentasikan siklus sistem komputer kepada siswa, animasi Ms. PowerPoint yang paling cocok agar diagram muncul satu-per-satu berurutan adalah...", a:"A", ops:{A:"Animation > Entrance > Appear/Fade", B:"Transition > Morph", C:"Animation > Exit > Disappear", D:"Design > Format Background", E:"Slide Show > Rehearse Timings"}},
-        {id:7, q:"Jika sebuah sekolah mengimplementasikan jaringan LAN dengan topologi Star, apa risiko terbesar (Single Point of Failure) dari desain ini?", a:"C", ops:{A:"Kabel mudah terputus", B:"Konfigurasi IP sulit dilakukan", C:"Jika Switch/Hub pusat mati, seluruh jaringan lumpuh", D:"Kecepatan internet dibagi rata", E:"Rentan terkena serangan hacker dari luar"}},
-        {id:8, q:"Dalam standar jaringan IEEE 802.3, kecepatan maksimal teoritis yang dapat dilewati oleh kabel UTP kategori 5e (Cat5e) adalah...", a:"D", ops:{A:"10 Mbps", B:"100 Mbps", C:"500 Mbps", D:"1 Gbps (1000 Mbps)", E:"10 Gbps"}},
-        {id:9, q:"Jika sebuah jaringan LAN memiliki Subnet Mask 255.255.255.192 (/26), berapa jumlah IP Address valid (host) yang dapat digunakan oleh perangkat PC dalam satu segmen?", a:"B", ops:{A:"30 host", B:"62 host", C:"64 host", D:"126 host", E:"254 host"}},
-        {id:10, q:"Pada model referensi OSI 7 Layer, perangkat Router beroperasi pada layer ke...", a:"C", ops:{A:"Layer 1 (Physical)", B:"Layer 2 (Data Link)", C:"Layer 3 (Network)", D:"Layer 4 (Transport)", E:"Layer 7 (Application)"}},
-        {id:11, q:"Proses pemberian alamat IP secara dinamis dari Server ke Client melewati 4 tahapan komunikasi yang dikenal dengan DORA. 'D' pada DORA merupakan singkatan dari...", a:"A", ops:{A:"Discover", B:"Domain", C:"Dynamic", D:"Data", E:"Delivery"}},
-        {id:12, q:"Anda menghubungkan dua buah PC secara langsung menggunakan kabel Cross-Over. PC A ber-IP 192.168.1.10/24 dan PC B ber-IP 192.168.2.10/24. Hasil 'ping' dari PC A ke PC B akan...", a:"C", ops:{A:"Reply karena menggunakan kabel cross-over", B:"Reply jika firewall dimatikan", C:"Request Time Out karena berbeda segmen network", D:"Destination Host Unreachable karena MAC Address sama", E:"Error pada layer physical"}},
-        {id:13, q:"Pada Cisco Packet Tracer, saat simulasi pengiriman paket ICMP (Ping) gagal karena Router belum mengetahui rute jaringan tujuan, pesan error yang tercatat pada PDU biasanya adalah...", a:"B", ops:{A:"Port Mismatch", B:"Routing Table is empty / No Route", C:"Wrong IP Address Class", D:"Cable Unplugged", E:"Protocol Not Supported"}},
-        {id:14, q:"Di Cisco IOS CLI, perintah 'show running-config' dijalankan pada mode...", a:"B", ops:{A:"User EXEC (>)", B:"Privileged EXEC (#)", C:"Global Configuration (config#)", D:"Interface Configuration (config-if#)", E:"ROMMON"}},
-        {id:15, q:"Dalam menganalisa traffic jaringan di Packet Tracer mode Simulation, warna amplop PDU hijau terang (ICMP) tiba-tiba berubah warna dan dibatalkan (dropped) pada layer 2. Hal ini biasanya terkait dengan...", a:"D", ops:{A:"IP tidak valid", B:"Port ditutup", C:"Kesalahan ketik perintah ping", D:"Proses ARP Request yang belum selesai", E:"Kabel putus"}},
-        {id:16, q:"Sebuah PC di Packet Tracer tidak bisa membuka website sekolah.com. Saat di-ping IP Servernya bisa (Reply), tapi di-ping domain sekolah.com gagal. Konfigurasi apa yang salah pada PC klien tersebut?", a:"D", ops:{A:"IP Address salah segmen", B:"Subnet Mask salah", C:"Default Gateway kosong", D:"DNS Server belum diisi/salah", E:"Kabel jaringan terbalik"}},
-        {id:17, q:"Perangkat yang secara cerdas mencatat MAC Address dari setiap PC yang terhubung di port-nya untuk mengurangi *collision* (tabrakan data) dalam simulasi jaringan adalah...", a:"B", ops:{A:"Hub", B:"Switch", C:"Repeater", D:"Access Point", E:"Modem"}},
-        {id:18, q:"Fungsi utama dari pengaturan 'Default Gateway' pada komputer klien adalah...", a:"C", ops:{A:"Memberikan alamat IP otomatis", B:"Menerjemahkan nama domain menjadi IP", C:"Pintu keluar untuk mengirim paket data ke jaringan luar/internet", D:"Membagi bandwidth internet", E:"Menyimpan cache website"}},
-        {id:19, q:"Perhatikan kode C++ berikut:\nint a = 5, b = 2;\nfloat c = a / b;\nBerapakah nilai variabel 'c' yang tersimpan di memori?", a:"A", ops:{A:"2.0", B:"2.5", C:"2", D:"3", E:"Error tipe data"}},
-        {id:20, q:"Bentuk penulisan percabangan bersarang (Nested If) yang menguji nilai secara sekuensial pada C++ biasanya diimplementasikan dengan sintaks...", a:"C", ops:{A:"if - for", B:"switch - break", C:"else if", D:"do - while", E:"try - catch"}},
-        {id:21, q:"Perhatikan algoritma perulangan berikut:\nfor(int i=1; i<=3; i++) {\n  for(int j=1; j<=2; j++) {\n    cout << \"*\";\n  }\n}\nBerapa jumlah bintang (*) yang akan tercetak?", a:"B", ops:{A:"5", B:"6", C:"9", D:"3", E:"2"}},
-        {id:22, q:"Dalam C++, jika sebuah variabel dideklarasikan di dalam blok fungsi 'void tampil()', maka variabel tersebut bersifat...", a:"C", ops:{A:"Global (bisa diakses di semua fungsi)", B:"Statis", C:"Lokal (hanya dikenali di dalam fungsi tersebut)", D:"Konstan (tidak bisa diubah)", E:"Dinamis"}},
-        {id:23, q:"Operator *Increment* (++x) dan *Decrement* (--x) dalam bahasa pemrograman C++ berfungsi untuk...", a:"D", ops:{A:"Mengalikan dan membagi nilai variabel dengan 2", B:"Mengecek apakah nilai variabel positif atau negatif", C:"Menambahkan atau mengurangi nilai variabel dengan bilangan acak", D:"Menaikkan atau menurunkan nilai variabel sebesar 1", E:"Membalikkan tipe data variabel"}},
-        {id:24, q:"Sebuah array dideklarasikan dengan 'int nilai[5] = {80, 90, 75, 85, 100};'. Untuk memanggil nilai 85, indeks array yang diakses adalah...", a:"D", ops:{A:"nilai[4]", B:"nilai[1]", C:"nilai[2]", D:"nilai[3]", E:"nilai[5]"}},
-        {id:25, q:"Dalam SQL, fungsi agregasi yang digunakan untuk menghitung total jumlah baris data yang memiliki nilai tertentu dalam suatu kolom adalah...", a:"D", ops:{A:"SUM()", B:"MAX()", C:"AVERAGE()", D:"COUNT()", E:"TOTAL()"}},
-        {id:26, q:"Perhatikan kueri berikut:\nSELECT kelas, COUNT(*) FROM siswa GROUP BY kelas HAVING COUNT(*) > 30;\nMaksud dari klausa HAVING pada kueri tersebut adalah...", a:"B", ops:{A:"Mengurutkan siswa berdasarkan kelas", B:"Memfilter hasil pengelompokan yang jumlah siswanya lebih dari 30", C:"Menggantikan klausa WHERE untuk tipe angka", D:"Mengalikan jumlah siswa dengan 30", E:"Menghapus data kelas yang siswanya di atas 30"}},
-        {id:27, q:"Jika Tabel 'Buku' di-LEFT JOIN dengan Tabel 'Peminjaman', apa yang terjadi pada record buku yang belum pernah dipinjam?", a:"A", ops:{A:"Tetap ditampilkan, dengan data kolom peminjaman berisi NULL", B:"Tidak ditampilkan sama sekali", C:"Menyebabkan error sintaks", D:"Data buku otomatis terhapus", E:"Ditampilkan di baris paling bawah secara acak"}},
-        {id:28, q:"Perbedaan mendasar antara perintah DROP TABLE dan TRUNCATE TABLE dalam SQL adalah...", a:"C", ops:{A:"DROP hanya menghapus data, TRUNCATE menghapus tabel", B:"DROP bersifat sementara, TRUNCATE bersifat permanen", C:"DROP menghapus tabel beserta strukturnya, TRUNCATE hanya mengosongkan seluruh datanya", D:"DROP digunakan pada DML, TRUNCATE digunakan pada DDL", E:"Tidak ada perbedaan, fungsinya sama"}},
-        {id:29, q:"Sebuah subquery dalam SQL biasanya diletakkan di dalam klausa...", a:"E", ops:{A:"Hanya di SELECT", B:"Hanya di FROM", C:"Hanya di GROUP BY", D:"Hanya di ORDER BY", E:"WHERE, FROM, atau SELECT"}},
-        {id:30, q:"Kueri untuk mengubah struktur tabel (misal: menambah kolom baru 'alamat' tipe VARCHAR) adalah...", a:"B", ops:{A:"UPDATE TABLE siswa SET kolom = 'alamat';", B:"ALTER TABLE siswa ADD alamat VARCHAR(100);", C:"MODIFY TABLE siswa INSERT alamat VARCHAR;", D:"CHANGE TABLE siswa COLUMN alamat;", E:"CREATE COLUMN alamat IN siswa;"}},
-        {id:31, q:"Konsep RDBMS yang memastikan sebuah nilai di kolom tabel Anak harus ada di kolom rujukan tabel Induk dikenal dengan istilah...", a:"B", ops:{A:"Data Redundancy", B:"Referential Integrity", C:"Database Normalization", D:"Query Optimization", E:"Transaction Rollback"}},
-        {id:32, q:"Mikrokontroler ESP32 memiliki arsitektur yang lebih canggih dibanding Arduino Uno standar, salah satunya adalah memiliki fitur bawaan berupa...", a:"C", ops:{A:"Layar LCD Touchscreen", B:"Sistem Operasi Windows Embedded", C:"Modul Bluetooth dan Wi-Fi Dual-Core", D:"Port HDMI untuk display", E:"Penyimpanan Harddisk internal"}},
-        {id:33, q:"Pin Analog pada papan mikrokontroler umumnya memiliki fitur ADC (Analog to Digital Converter) 10-bit. Artinya, rentang nilai digital yang dihasilkan adalah...", a:"B", ops:{A:"0 hingga 10", B:"0 hingga 1023", C:"0 hingga 255", D:"1 hingga 100", E:"0 hingga 1000"}},
-        {id:34, q:"Dalam pemrograman mikrokontroler, masalah 'Bouncing' saat menekan tombol fisik (hardware) diatasi dengan teknik...", a:"A", ops:{A:"Debouncing (menambahkan jeda waktu/delay mikro)", B:"Menurunkan tegangan input", C:"Menambah perintah analogWrite", D:"Mengganti kabel jumper", E:"Menggunakan tipe data float"}},
-        {id:35, q:"Instruksi 'pinMode(LED_BUILTIN, OUTPUT);' dalam Arduino IDE berfungsi untuk...", a:"D", ops:{A:"Menyimpan nilai sensor cahaya", B:"Menyalakan lampu LED", C:"Mematikan lampu LED", D:"Mendefinisikan fungsi pin sebagai penghasil tegangan (keluaran)", E:"Menerima sinyal dari luar sirkuit"}},
-        {id:36, q:"Untuk membaca status logika dari sebuah sensor gerak (PIR) yang memberikan nilai High (1) atau Low (0), fungsi yang digunakan adalah...", a:"C", ops:{A:"analogRead()", B:"analogWrite()", C:"digitalRead()", D:"digitalWrite()", E:"pulseIn()"}},
-        {id:37, q:"Perangkat IoT sering menggunakan protokol komunikasi ringan khusus mesin (M2M) dengan arsitektur publish/subscribe. Protokol ini disebut...", a:"C", ops:{A:"HTTP", B:"FTP", C:"MQTT", D:"SMTP", E:"VoIP"}},
-        {id:38, q:"Dalam struktur direktori web (Relative Path), untuk menautkan gambar yang berada satu folder di 'atas' dari folder file HTML saat ini, kita menuliskan src=\"...", a:"D", ops:{A:"/gambar.jpg\"", B:"./gambar.jpg\"", C:"gambar.jpg\"", D:"../gambar.jpg\"", E:"//gambar.jpg\""}},
-        {id:39, q:"Tag HTML5 yang secara semantik dianjurkan untuk membungkus konten navigasi menu website adalah...", a:"C", ops:{A:"<menu>", B:"<navbar>", C:"<nav>", D:"<header>", E:"<aside>"}},
-        {id:40, q:"Atribut 'alt' pada tag <img> sangat penting dalam web modern karena berfungsi untuk...", a:"E", ops:{A:"Mengubah resolusi gambar", B:"Memberi bingkai pada gambar", C:"Menambahkan tautan pada gambar", D:"Menentukan letak gambar", E:"Aksesibilitas (Screen Reader) dan alternatif jika gambar gagal dimuat"}},
-        {id:41, q:"CSS Box Model mendefinisikan ruang di sekitar konten. Urutan dari posisi paling dalam (dekat teks) hingga paling luar adalah...", a:"B", ops:{A:"Content - Margin - Border - Padding", B:"Content - Padding - Border - Margin", C:"Content - Border - Padding - Margin", D:"Padding - Content - Border - Margin", E:"Margin - Padding - Border - Content"}},
-        {id:42, q:"Properti CSS 'position: absolute;' akan membuat elemen...", a:"A", ops:{A:"Diposisikan relatif terhadap container induk pertamanya yang berposisi relative/absolute", B:"Mengikuti gulir layar (scroll)", C:"Terpusat otomatis di tengah layar", D:"Diposisikan sesuai aliran dokumen normal", E:"Menghilang dari layar"}},
-        {id:43, q:"Pada Form HTML, elemen `<input type=\"password\">` akan membuat masukan teks pengguna...", a:"D", ops:{A:"Ter-enkripsi langsung ke server", B:"Tidak dapat dihapus", C:"Hanya menerima kombinasi angka", D:"Disamarkan menjadi karakter titik atau bintang", E:"Disimpan secara permanen di browser"}},
-        {id:44, q:"Untuk membuat tata letak dua kolom berdampingan yang fleksibel, teknologi CSS modern yang paling efisien digunakan adalah...", a:"C", ops:{A:"Float", B:"Tables", C:"Flexbox atau CSS Grid", D:"Inline-block", E:"Positioning"}},
-        {id:45, q:"Jika spesifisitas CSS berbenturan: Selector ID bernilai 100, Class bernilai 10, dan Element Tag bernilai 1. Berapakah 'nilai' spesifisitas dari selector: `div#header .menu li`?", a:"A", ops:{A:"112 (1 ID, 1 Class, 2 Element)", B:"12", C:"102", D:"110", E:"120"}},
-        {id:46, q:"Karakter khusus HTML Entity untuk menampilkan simbol lebih kecil (<) di layar tanpa terdeteksi sebagai tag adalah...", a:"B", ops:{A:"&copy;", B:"&lt;", C:"&gt;", D:"&amp;", E:"&quot;"}},
-        {id:47, q:"Media Queries pada CSS (@media) adalah teknik utama yang digunakan untuk merealisasikan...", a:"C", ops:{A:"Animasi transisi 3D", B:"Pemutaran video HTML5", C:"Desain web responsif (Responsive Web Design)", D:"Pengambilan data dari Database", E:"Penyisipan file audio"}},
-        {id:48, q:"Atribut HTML yang digunakan agar sebuah link (tautan) terbuka di tab atau jendela browser baru adalah...", a:"C", ops:{A:"target=\"_self\"", B:"target=\"_parent\"", C:"target=\"_blank\"", D:"open=\"new\"", E:"window=\"blank\""}},
-        {id:49, q:"CSS: Apa hasil dari aturan `p { font-weight: 700; }` pada dokumen web?", a:"A", ops:{A:"Seluruh teks dalam paragraf dicetak tebal", B:"Teks paragraf berukuran 700 pixel", C:"Ketebalan garis pinggir (border) paragraf menjadi 700 unit", D:"Teks paragraf dimiringkan", E:"Spasi antar huruf diperbesar"}},
-        {id:50, q:"Teknologi CSS yang membuat perpindahan state (misalnya perubahan warna tombol saat di-hover) terjadi secara halus dalam durasi tertentu disebut...", a:"D", ops:{A:"Transformation", B:"Keyframes", C:"Filter", D:"Transition", E:"Opacity"}}
+        {id:1, q:"Serangkaian langkah-langkah logis dan sistematis yang disusun untuk menyelesaikan suatu masalah menggunakan komputer disebut...", _k:"Z9", ops:{A:"Flowchart", B:"Pseudocode", C:"Algoritma", D:"Program", E:"Logika"}},
+        {id:2, q:"Dalam pembuatan flowchart, simbol belah ketupat (diamond) berfungsi untuk menyatakan...", _k:"W6", ops:{A:"Proses perhitungan", B:"Titik awal dan akhir program", C:"Input atau output data", D:"Pengambilan keputusan (kondisi)", E:"Arah aliran program"}},
+        {id:3, q:"Jika A = 5 dan B = 10, maka hasil dari ekspresi logika (A &gt; 3) AND (B &lt; 5) adalah...", _k:"Y8", ops:{A:"True", B:"False", C:"5", D:"10", E:"Error"}},
+        {id:4, q:"Struktur perulangan (looping) yang akan mengeksekusi blok kode minimal satu kali meskipun kondisi awal bernilai salah adalah...", _k:"Z9", ops:{A:"For", B:"While", C:"Do-While", D:"If-Else", E:"Switch-Case"}},
+        {id:5, q:"Siklus pengolahan data pada sistem komputer yang paling tepat adalah...", _k:"Y8", ops:{A:"Output -> Process -> Input", B:"Input -> Process -> Output", C:"Process -> Input -> Output", D:"Input -> Output -> Process", E:"Output -> Input -> Process"}},
+        {id:6, q:"Perangkat lunak sistem operasi yang bersifat open source dan memiliki logo pinguin adalah...", _k:"Z9", ops:{A:"Windows", B:"MacOS", C:"Linux", D:"Android", E:"iOS"}},
+        {id:7, q:"Fitur pada Microsoft Word yang memungkinkan pengguna membuat surat massal dengan tujuan penerima yang berbeda-beda secara otomatis menggunakan sumber data eksternal adalah...", _k:"W6", ops:{A:"Table of Contents", B:"Track Changes", C:"Cross-reference", D:"Mail Merge", E:"Bibliography"}},
+        {id:8, q:"Pada Microsoft Excel, jika sel A1 berisi nilai 80 dan sel B1 berisi nilai 70, rumus =IF(AND(A1&gt;75, B1&gt;75), \"Lulus\", \"Remedial\") akan menghasilkan output...", _k:"Y8", ops:{A:"Lulus", B:"Remedial", C:"TRUE", D:"FALSE", E:"#VALUE!"}},
+        {id:9, q:"Topologi jaringan di mana setiap komputer terhubung langsung ke satu perangkat pusat (seperti switch) disebut topologi...", _k:"Z9", ops:{A:"Bus", B:"Ring", C:"Star", D:"Mesh", E:"Tree"}},
+        {id:10, q:"Kabel jaringan yang paling umum digunakan untuk instalasi LAN di dalam ruangan/gedung perkantoran adalah...", _k:"Z9", ops:{A:"Coaxial", B:"Fiber Optic", C:"UTP (Unshielded Twisted Pair)", D:"STP (Shielded Twisted Pair)", E:"HDMI"}},
+        {id:11, q:"Penulisan Subnet mask default untuk IP Address Kelas C (contoh: 192.168.1.1) dalam notasi CIDR (Classless Inter-Domain Routing) yang benar adalah...", _k:"Z9", ops:{A:"/8", B:"/16", C:"/24", D:"/32", E:"/12"}},
+        {id:12, q:"Perangkat jaringan yang beroperasi pada layer 3 OSI Model dan berfungsi untuk menghubungkan dua jaringan dengan segmen IP yang berbeda adalah...", _k:"W6", ops:{A:"Hub", B:"Switch", C:"Bridge", D:"Router", E:"Repeater"}},
+        {id:13, q:"Secara teknis, fungsi utama penggunaan kabel jenis Cross-Over saat menghubungkan dua buah PC secara langsung tanpa switch adalah...", _k:"Y8", ops:{A:"Melipatgandakan kecepatan transfer data", B:"Mempertemukan jalur pengirim (TX) di satu ujung dengan jalur penerima (RX) di ujung lainnya", C:"Mencegah terjadinya korsleting listrik antar port", D:"Menyesuaikan protokol jaringan yang berbeda", E:"Menghindari serangan virus melalui jaringan lokal"}},
+        {id:14, q:"Ekstensi file standar yang dihasilkan saat Anda menyimpan proyek simulasi jaringan di aplikasi Cisco Packet Tracer adalah...", _k:"Y8", ops:{A:".docx", B:".pkt", C:".html", D:".pptx", E:".cpp"}},
+        {id:15, q:"Ikon berbentuk \"Petir\" (Lightning Bolt) berwarna oranye pada menu Connections di Packet Tracer berfungsi untuk...", _k:"Y8", ops:{A:"Menghapus konfigurasi router", B:"Memilih jenis kabel secara otomatis antar dua perangkat", C:"Mengirim paket data PDU secara berulang", D:"Menghidupkan ulang (restart) perangkat keras", E:"Menghubungkan topologi ke cloud internet"}},
+        {id:16, q:"Menu yang digunakan untuk memberikan alamat IP statis pada sebuah PC klien di dalam Packet Tracer terletak pada tab Desktop, yaitu menu...", _k:"W6", ops:{A:"Command Prompt", B:"Web Browser", C:"Terminal", D:"IP Configuration", E:"PC Wireless"}},
+        {id:17, q:"Mode tampilan di Cisco Packet Tracer yang memungkinkan pengguna melihat pergerakan paket data (PDU) langkah demi langkah untuk keperluan analisis troubleshooting disebut...", _k:"Z9", ops:{A:"Realtime Mode", B:"Physical Mode", C:"Simulation Mode", D:"Logical Mode", E:"CLI Mode"}},
+        {id:18, q:"Perintah dasar pada Command Prompt yang digunakan untuk menguji konektivitas dan waktu respons antar perangkat jaringan adalah...", _k:"W6", ops:{A:"ipconfig", B:"traceroute", C:"netstat", D:"ping", E:"nslookup"}},
+        {id:19, q:"Perintah standar dalam bahasa C++ yang berfungsi untuk menampilkan output teks ke layar console adalah...", _k:"Y8", ops:{A:"cin >>", B:"cout <<", C:"scanf()", D:"print()", E:"System.out.println()"}},
+        {id:20, q:"Tipe data yang paling tepat dideklarasikan untuk menyimpan nilai bilangan pecahan (desimal) seperti 3.14 pada bahasa C++ adalah...", _k:"W6", ops:{A:"int", B:"char", C:"string", D:"float", E:"bool"}},
+        {id:21, q:"Perhatikan potongan kode C++ berikut:\nint x = 10;\nwhile (x &gt; 0) {\n   cout << x << \" \";\n   x = x - 3;\n}\nOutput yang akan dicetak di layar adalah...", _k:"Y8", ops:{A:"10 9 8 7 6 5 4 3 2 1", B:"10 7 4 1", C:"10 7 4 1 -2", D:"7 4 1", E:"Terjadi Error"}},
+        {id:22, q:"Operator logika yang bermakna \"ATAU\" (OR) dalam sintaks bahasa C++ disimbolkan dengan...", _k:"Y8", ops:{A:"&&", B:"||", C:"!", D:"!=", E:"=="}},
+        {id:23, q:"Indeks elemen pertama dalam sebuah Array pada pemrograman C++ dan mayoritas bahasa pemrograman lainnya dimulai dari angka...", _k:"Y8", ops:{A:"-1", B:"0", C:"1", D:"2", E:"Tidak terhingga"}},
+        {id:24, q:"Apa makna struktural dari penulisan return 0; pada akhir fungsi main() di C++?", _k:"Z9", ops:{A:"Memerintahkan program mengulang proses dari baris awal", B:"Menghentikan program secara paksa akibat error", C:"Menandakan bahwa program telah dieksekusi dan berakhir dengan sukses", D:"Mencetak angka 0 ke layar monitor", E:"Menghapus variabel dari memori RAM"}},
+        {id:25, q:"Perintah Data Definition Language (DDL) dalam SQL yang digunakan untuk membuat sebuah database baru adalah...", _k:"Y8", ops:{A:"CREATE NEW DATABASE sekolah;", B:"CREATE DATABASE sekolah;", C:"MAKE DATABASE sekolah;", D:"NEW DATABASE sekolah;", E:"ADD DATABASE sekolah;"}},
+        {id:26, q:"Perhatikan kueri SQL berikut:\nSELECT nama FROM siswa WHERE (nilai_mtk &gt; 80 OR ekskul = 'Robotik') AND kelas = '12';\nKueri di atas akan menampilkan baris data siswa yang...", _k:"Z9", ops:{A:"Memiliki nilai matematika di atas 80 tanpa memandang kelas", B:"Menjadi anggota ekskul Robotik saja", C:"Duduk di kelas 12, dan wajib memenuhi salah satu syarat (nilai MTK &gt; 80 atau anggota Robotik)", D:"Duduk di kelas 12, memiliki nilai MTK &gt; 80, dan wajib berstatus anggota Robotik", E:"Menampilkan seluruh data siswa kelas 12 secara utuh"}},
+        {id:27, q:"Jenis operasi penggabungan tabel (JOIN) yang hanya akan menampilkan baris data jika terdapat kecocokan nilai Foreign Key dan Primary Key pada kedua tabel adalah...", _k:"Z9", ops:{A:"LEFT JOIN", B:"RIGHT JOIN", C:"INNER JOIN", D:"FULL OUTER JOIN", E:"CROSS JOIN"}},
+        {id:28, q:"Kueri SQL yang tepat dan aman untuk menghapus struktur tabel 'guru' beserta seluruh isinya secara permanen dari database adalah...", _k:"Z9", ops:{A:"DELETE TABLE guru;", B:"REMOVE TABLE guru;", C:"DROP TABLE guru;", D:"ERASE TABLE guru;", E:"TRUNCATE TABLE guru;"}},
+        {id:29, q:"Constraint dalam SQL yang menjamin bahwa nilai dalam suatu kolom tidak boleh ada yang sama (duplikat) sekaligus tidak boleh dibiarkan kosong (NULL) adalah...", _k:"Z9", ops:{A:"UNIQUE", B:"NOT NULL", C:"PRIMARY KEY", D:"FOREIGN KEY", E:"DEFAULT"}},
+        {id:30, q:"Apa yang akan terjadi jika Administrator mencoba menghapus sebuah baris data di Tabel Induk (Parent Table), sementara ID dari baris tersebut sedang dipakai sebagai Foreign Key di Tabel Anak (Child Table)?", _k:"Z9", ops:{A:"Data di Tabel Anak akan terhapus otomatis secara default", B:"Skema Database akan melakukan reset ulang", C:"Proses penghapusan ditolak (Error) karena melanggar aturan Referential Integrity", D:"Data di Tabel Induk terhapus, namun data di Tabel Anak tidak berubah", E:"Data otomatis berubah menjadi status NULL"}},
+        {id:31, q:"Sintaks Data Manipulation Language (DML) untuk menyisipkan atau menambah baris data baru ke dalam sebuah tabel adalah...", _k:"Y8", ops:{A:"ADD INTO", B:"INSERT INTO", C:"UPDATE", D:"ALTER TABLE", E:"CREATE DATA"}},
+        {id:32, q:"Komponen utama (otak) pada sebuah sistem embedded seperti papan Arduino yang berfungsi untuk memproses instruksi logika dan aritmatika dari program adalah...", _k:"Z9", ops:{A:"Resistor", B:"Kapasitor", C:"Mikrokontroler", D:"Sensor Analog", E:"Aktuator Motor"}},
+        {id:33, q:"Dalam rangkaian IoT, komponen elektronika yang bertugas mendeteksi perubahan lingkungan fisik (seperti intensitas cahaya, suhu, atau kelembapan) lalu mengubahnya menjadi sinyal listrik disebut...", _k:"X7", ops:{A:"Sensor", B:"Aktuator", C:"Mikrokontroler", D:"Resistor Pull-up", E:"LED"}},
+        {id:34, q:"Pada penulisan sketch Arduino, blok fungsi yang hanya dieksekusi satu kali saat papan (board) pertama kali dinyalakan atau di-reset adalah...", _k:"Y8", ops:{A:"void loop()", B:"void setup()", C:"void main()", D:"void start()", E:"int main()"}},
+        {id:35, q:"Perangkat mikrokontroler NodeMCU ESP8266 sangat digemari dan populer untuk tugas pembuatan purwarupa proyek Internet of Things (IoT) karena memiliki keunggulan utama berupa...", _k:"Y8", ops:{A:"Kapasitas RAM yang setara dengan komputer desktop", B:"Memiliki modul Wi-Fi bawaan yang terintegrasi di dalam chip", C:"Tidak membutuhkan pasokan daya listrik untuk beroperasi", D:"Dapat memancarkan sinyal radio satelit", E:"Mampu menampilkan antarmuka grafis 3D"}},
+        {id:36, q:"Mengapa pada rangkaian tombol (push button) Arduino seringkali ditambahkan komponen Resistor Pull-Up atau Pull-Down?", _k:"Y8", ops:{A:"Untuk mencegah terjadinya korsleting listrik saat tombol ditekan", B:"Untuk menstabilkan sinyal input agar tidak dalam kondisi 'mengambang' (floating) saat tombol dilepas", C:"Untuk mengubah data sinyal digital murni menjadi sinyal analog", D:"Untuk melipatgandakan tegangan dari 5V menjadi 12V", E:"Untuk menghemat konsumsi daya baterai mikrokontroler"}},
+        {id:37, q:"Pada Arduino, jika Anda ingin mengatur tingkat kecerahan sebuah lampu LED (meredupkannya secara perlahan), instruksi yang memanipulasi Pulse Width Modulation (PWM) yang tepat digunakan adalah...", _k:"Z9", ops:{A:"digitalRead()", B:"digitalWrite()", C:"analogWrite()", D:"pulseIn()", E:"shiftOut()"}},
+        {id:38, q:"Struktur fondasi utama dari sebuah dokumen web HTML wajib diawali dan diakhiri dengan tag pendefinisi dokumen, yaitu...", _k:"Z9", ops:{A:"&lt;body&gt; dan &lt;/body&gt;", B:"&lt;head&gt; dan &lt;/head&gt;", C:"&lt;html&gt; dan &lt;/html&gt;", D:"&lt;title&gt; dan &lt;/title&gt;", E:"&lt;header&gt; dan &lt;footer&gt;"}},
+        {id:39, q:"Tag HTML yang dirancang untuk membuat daftar poin (bullet points) yang hierarkinya tidak berurutan adalah...", _k:"Y8", ops:{A:"&lt;ol&gt;", B:"&lt;ul&gt;", C:"&lt;li&gt;", D:"&lt;dl&gt;", E:"&lt;menu&gt;"}},
+        {id:40, q:"Atribut yang sifatnya wajib disematkan di dalam tag &lt;img&gt; untuk menunjukkan alamat direktori atau URL file gambar berada adalah...", _k:"Z9", ops:{A:"href", B:"link", C:"src", D:"alt", E:"path"}},
+        {id:41, q:"Jika sebuah paragraf didefinisikan dengan tag HTML &lt;p id=\"teks-utama\" class=\"warna-teks\"&gt;Informatika&lt;/p&gt;, lalu terdapat kode CSS:\n#teks-utama { color: blue; }\n.warna-teks { color: red; }\nMaka kata \"Informatika\" di halaman web akan berwarna...", _k:"Y8", ops:{A:"Merah, karena selector class lebih dominan", B:"Biru, karena selector ID memiliki nilai spesifisitas (specificity) yang lebih tinggi dibanding Class", C:"Hitam, karena browser mendeteksi adanya konflik gaya", D:"Ungu, akibat percampuran dari kedua warna", E:"Merah, karena deklarasi kelas ditulis pada atribut elemen paling kanan"}},
+        {id:42, q:"Untuk membuat teks menjadi cetak tebal (bold), tag HTML standar secara semantik yang dianjurkan untuk digunakan adalah...", _k:"Z9", ops:{A:"&lt;i&gt; atau &lt;em&gt;", B:"&lt;u&gt;", C:"&lt;b&gt; atau &lt;strong&gt;", D:"&lt;h1&gt;", E:"&lt;br&gt;"}},
+        {id:43, q:"Tag &lt;a href=\"halaman.html\"&gt;Klik Disini&lt;/a&gt; berfungsi untuk...", _k:"W6", ops:{A:"Menampilkan sebuah gambar di halaman web", B:"Membuat teks bergerak (marquee)", C:"Membuat paragraf teks rata tengah", D:"Membuat tautan (hyperlink) menuju dokumen/halaman lain", E:"Membuat tombol formulir untuk mengirim data"}},
+        {id:44, q:"Dalam pembuatan tabel HTML, tag penyusun &lt;tr&gt; difungsikan untuk mendefinisikan bagian...", _k:"Z9", ops:{A:"Kolom pada tabel", B:"Sel data spesifik", C:"Baris pada tabel", D:"Judul kepala tabel", E:"Garis pinggir tabel"}},
+        {id:45, q:"Apa kepanjangan sebenarnya dari akronim CSS dalam desain web?", _k:"Z9", ops:{A:"Computer Style Sheets", B:"Creative Style System", C:"Cascading Style Sheets", D:"Colorful Style Sheets", E:"Code Style System"}},
+        {id:46, q:"Di dalam CSS, karakter simbol yang digunakan secara spesifik untuk memanggil selector berbasis ID adalah...", _k:"Y8", ops:{A:"Titik (.)", B:"Pagar (#)", C:"At (@)", D:"Dolar ($)", E:"Bintang (*)"}},
+        {id:47, q:"Properti CSS yang mengatur warna latar belakang dari sebuah elemen container atau teks adalah...", _k:"Z9", ops:{A:"color", B:"font-color", C:"background-color", D:"bgcolor", E:"fill-color"}},
+        {id:48, q:"Mengapa dalam merancang form HTML, atribut method=\"POST\" dianggap lebih aman dan disarankan untuk data sensitif seperti password, dibandingkan method=\"GET\"?", _k:"Z9", ops:{A:"POST memproses pengiriman data lebih cepat dari sisi server", B:"GET tidak sanggup mengirim tipe data berbentuk teks", C:"POST membungkus data dalam body HTTP sehingga tidak terekspos langsung pada URL browser", D:"GET dikhususkan hanya untuk mengunggah file gambar dan video", E:"POST dapat beroperasi secara penuh secara offline tanpa koneksi internet"}},
+        {id:49, q:"Penulisan blok komentar di dalam dokumen HTML yang tidak akan ditampilkan oleh web browser harus diapit oleh karakter...", _k:"Z9", ops:{A:"// dan //", B:"/* dan */", C:"&lt;!-- dan --&gt;", D:"&lt;# dan #&gt;", E:"{{ dan }}"}},
+        {id:50, q:"Jika pengembang web ingin menyisipkan file CSS eksternal (contoh: style.css) agar diterapkan ke dalam file HTML, maka tag yang tepat ditulis di dalam bagian &lt;head&gt; adalah...", _k:"W6", ops:{A:"&lt;style src=\"style.css\"&gt;&lt;/style&gt;", B:"&lt;css src=\"style.css\" /&gt;", C:"&lt;script type=\"text/css\" href=\"style.css\"&gt;&lt;/script&gt;", D:"&lt;link rel=\"stylesheet\" href=\"style.css\"&gt;", E:"&lt;import url=\"style.css\"&gt;"}}
     ];
 
     // --- CONFIG ---
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzev-A-tUgxXIGZpuKZ9OuJgbny-tRNWXKP_3CJMC5FZrxdtZ3aRimMZ5R3OiYZTpGyvA/exec';  // GANTI INI
-    const PENALTY_MINUTES = 15;
+    // !!! TEMPEL WEB APP URL GOOGLE SCRIPT ANDA DI BAWAH INI !!!
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzev-A-tUgxXIGZpuKZ9OuJgbny-tRNWXKP_3CJMC5FZrxdtZ3aRimMZ5R3OiYZTpGyvA/exec'; 
+    const PENALTY_MINUTES = 20;
+    
+    // Engine Dekripsi Kunci Jawaban
+    const _map = { "A": "X7", "B": "Y8", "C": "Z9", "D": "W6", "E": "V5" };
 
     // --- VARIABLES ---
     let currentIdx = 0;
@@ -243,31 +255,24 @@
     let violations = parseInt(localStorage.getItem('remViolations') || "0");
     let lockEndTime = parseInt(localStorage.getItem('remLockUntil') || "0");
 
-    // --- LOGIKA ANTI CURANG ---
     document.addEventListener("DOMContentLoaded", () => {
         checkLockStatus();
     });
 
     document.addEventListener("visibilitychange", () => {
-        if (isExamStarted && document.hidden) {
-            handleTabSwitch();
-        }
+        if (isExamStarted && document.hidden) handleTabSwitch();
     });
 
     window.addEventListener("blur", () => {
-        if (isExamStarted && document.visibilityState !== 'hidden') {
-            handleTabSwitch();
-        }
+        if (isExamStarted && document.visibilityState !== 'hidden') handleTabSwitch();
     });
 
     function handleTabSwitch() {
         if (lockEndTime > Date.now()) {
             lockEndTime = Date.now() + (PENALTY_MINUTES * 60000);
             localStorage.setItem('remLockUntil', lockEndTime);
-            
             const resetAlert = document.getElementById('reset-alert');
             resetAlert.style.display = 'block';
-            
             const blockScreen = document.getElementById('block-screen');
             blockScreen.style.animation = 'none';
             setTimeout(() => blockScreen.style.animation = 'popIn 0.3s ease', 10);
@@ -335,7 +340,6 @@
         }, 1000);
     }
 
-    // --- LOGIKA UJIAN ---
     function startExam() {
         userName = document.getElementById('nama').value;
         userClass = document.getElementById('kelas').value;
@@ -375,7 +379,7 @@
         });
 
         let qText = q.q;
-        if(qText.includes("int ") || qText.includes("SELECT ") || qText.includes("for(") || qText.includes("<div")) {
+        if(qText.includes("int ") || qText.includes("SELECT ") || qText.includes("for(") || qText.includes("while (")) {
              qText = `<pre>${qText}</pre>`;
         }
 
@@ -443,31 +447,43 @@
         document.getElementById('result-section').style.display = 'block';
 
         let correctCount = 0;
-        questions.forEach(q => { if(answers[q.id] === q.a) correctCount++; });
+        
+        // Cek Nilai berdasarkan Kunci yang Terenkripsi
+        questions.forEach(q => { 
+            if(answers[q.id] && _map[answers[q.id]] === q._k) correctCount++; 
+        });
 
         const finalScore = correctCount * 2;
         document.getElementById('student-info').innerText = `${userName} - ${userClass}`;
         document.getElementById('score-display').innerText = finalScore;
 
-        const formData = new FormData();
+        const statusEl = document.getElementById('status-upload');
+        statusEl.innerText = "Mengirim data ke server...";
+
+        const formData = new URLSearchParams();
         formData.append('Nama', userName + " (Remedial)");
         formData.append('Kelas', userClass);
         formData.append('Nilai', finalScore);
 
-        fetch(scriptURL, { method: 'POST', body: formData })
-            .then(response => {
-                const statusEl = document.getElementById('status-upload');
-                statusEl.innerText = "✅ Nilai Remedial berhasil disimpan!";
-                statusEl.style.background = "rgba(39, 174, 96, 0.1)";
-                statusEl.style.color = "#27ae60";
-                localStorage.removeItem('remViolations');
-            })
-            .catch(error => {
-                const statusEl = document.getElementById('status-upload');
-                statusEl.innerText = "⚠️ Server Gagal! Segera screenshot halaman ini.";
-                statusEl.style.background = "rgba(192, 57, 43, 0.1)";
-                statusEl.style.color = "#c0392b";
-            });
+        fetch(scriptURL, { 
+            method: 'POST', 
+            body: formData,
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(() => {
+            statusEl.innerText = "✅ Nilai Remedial berhasil disimpan!";
+            statusEl.style.background = "rgba(39, 174, 96, 0.1)";
+            statusEl.style.color = "#27ae60";
+            localStorage.removeItem('remViolations');
+        })
+        .catch(error => {
+            statusEl.innerText = "⚠️ Terjadi kesalahan jaringan. Segera screenshot halaman ini sebagai bukti.";
+            statusEl.style.background = "rgba(192, 57, 43, 0.1)";
+            statusEl.style.color = "#c0392b";
+        });
     }
 </script>
 
